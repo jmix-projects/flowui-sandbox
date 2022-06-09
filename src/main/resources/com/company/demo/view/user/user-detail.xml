@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<screen xmlns="http://jmix.io/schema/flowui/screen"
+        title="msg://UserDetail.title"
+        focusComponent="form">
+    <data>
+        <instance id="userDc"
+                  class="com.company.demo.entity.User">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <actions>
+        <action id="commitAction" type="editor_commitClose"/>
+        <action id="closeAction" type="editor_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions">
+        <formLayout id="form" dataContainer="userDc">
+            <passwordField id="passwordField"
+                           label="msg://com.company.demo.entity/User.password"
+                           required="true"
+                           visible="false" colspan=""/>
+            <passwordField id="confirmPasswordField"
+                           label="msg://confirmPassword"
+                           required="true"
+                           visible="false"/>
+            <textField id="firstNameField" property="firstName"/>
+            <textField id="lastNameField" property="lastName"/>
+            <textField id="emailField" property="email"/>
+            <comboBox id="timeZoneField" property="timeZoneId"/>
+            <checkBox id="activeField" property="active"/>
+        </formLayout>
+        <hbox id="editActions">
+            <button id="commitAndCloseBtn" action="commitAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</screen>

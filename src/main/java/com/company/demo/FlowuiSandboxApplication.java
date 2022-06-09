@@ -1,6 +1,8 @@
 package com.company.demo;
 
 import com.google.common.base.Strings;
+import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.theme.Theme;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +18,8 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 
 @SpringBootApplication
-public class FlowuiSandboxApplication {
+@Theme(value = "flowuisandbox")
+public class FlowuiSandboxApplication implements AppShellConfigurator {
 
     @Autowired
     private Environment environment;

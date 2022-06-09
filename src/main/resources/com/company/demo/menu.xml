@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<menu-config xmlns="http://jmix.io/schema/ui/menu">
+<menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
-    <menu id="application" caption="msg://com.company.demo/menu.application" insertBefore="administration">
-        <item screen="User.browse" caption="msg://com.company.demo.screen.user/UserBrowse.caption"/>
-        <item screen="themeSettingsScreen" caption="msg://io.jmix.ui.app.themesettings/themeSettings.caption"/>
+    <menu id="application" title="msg://com.company.demo/menu.application.title" opened="true" className="foo-class, bar-class">
+        <item screen="User.browse" title="msg://com.company.demo.view.user/UserView.title"/>
     </menu>
 
 </menu-config>
