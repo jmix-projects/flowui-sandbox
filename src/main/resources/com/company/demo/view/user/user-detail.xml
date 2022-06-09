@@ -20,10 +20,11 @@
                 width="800"/>
     <layout expand="editActions">
         <formLayout id="form" dataContainer="userDc">
+            <textField id="usernameField" property="username" readOnly="true"/>
             <passwordField id="passwordField"
                            label="msg://com.company.demo.entity/User.password"
                            required="true"
-                           visible="false" colspan=""/>
+                           visible="false"/>
             <passwordField id="confirmPasswordField"
                            label="msg://confirmPassword"
                            required="true"
