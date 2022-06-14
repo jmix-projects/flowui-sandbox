@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<screen xmlns="http://jmix.io/schema/flowui/screen"
+        title="msg://ProductView.title"
+        focusComponent="productsTable">
+    <data readOnly="true">
+        <collection id="productsDc"
+                    class="com.company.demo.entity.Product">
+            <fetchPlan extends="_base"/>
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[select e from Product e order by e.name]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="productsTable">
+        <hbox id="buttonsPanel">
+            <button id="createBtn" action="productsTable.create"/>
+            <button id="editBtn" action="productsTable.edit"/>
+            <button id="removeBtn" action="productsTable.remove"/>
+        </hbox>
+        <dataGrid id="productsTable"
+                    width="100%"
+                    dataContainer="productsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column property="name"/>
+                <column property="price"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button action="selectAction"/>
+            <button action="discardAction"/>
+        </hbox>
+    </layout>
+</screen>

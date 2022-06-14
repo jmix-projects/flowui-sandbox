@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<screen xmlns="http://jmix.io/schema/flowui/screen"
+        title="msg://ProductDetail.title"
+        focusComponent="form">
+    <data>
+        <instance id="productDc"
+                  class="com.company.demo.entity.Product">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <actions>
+        <action id="commitAction" type="editor_commitClose"/>
+        <action id="closeAction" type="editor_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout expand="editActions">
+        <formLayout id="form" dataContainer="productDc">
+            <textField id="nameField" property="name"/>
+            <textField id="priceField" property="price"/>
+        </formLayout>
+        <hbox id="editActions">
+            <button id="commitAndCloseBtn" action="commitAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</screen>
