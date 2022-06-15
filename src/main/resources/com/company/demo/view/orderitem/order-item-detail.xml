@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<screen xmlns="http://jmix.io/schema/flowui/screen"
+        title="msg://OrderItemDetail.title"
+        focusComponent="form">
+    <data>
+        <instance id="orderItemDc"
+                  class="com.company.demo.entity.OrderItem">
+            <fetchPlan extends="_base">
+                <property name="order" fetchPlan="_base"/>
+                <property name="product" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <actions>
+        <action id="commitAction" type="editor_commitClose"/>
+        <action id="closeAction" type="editor_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout expand="editActions">
+        <formLayout id="form" dataContainer="orderItemDc">
+            <entityComboBox id="orderField" property="order">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
+            <entityComboBox id="productField" property="product">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
+            <textField id="quantityField" property="quantity"/>
+        </formLayout>
+        <hbox id="editActions">
+            <button id="commitAndCloseBtn" action="commitAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</screen>

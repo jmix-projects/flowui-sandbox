@@ -3,6 +3,7 @@
 
     <menu id="application" title="msg://com.company.demo/menu.application.title" opened="true">
         <item screen="Product.browse" title="msg://com.company.demo.view.product/ProductView.menu"/>
+        <item screen="Order_.browse" title="msg://com.company.demo.view.order/OrderView.menu"/>
         <item screen="User.browse" title="msg://com.company.demo.view.user/UserView.title"/>
     </menu>
 
