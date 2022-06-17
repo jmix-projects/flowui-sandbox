@@ -5,9 +5,20 @@
     <data>
         <instance id="productDc"
                   class="com.company.demo.entity.Product">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="category" fetchPlan="_base"/>
+            </fetchPlan>
             <loader/>
         </instance>
+        <collection id="categoriesDc"
+                    class="com.company.demo.entity.Category">
+            <fetchPlan extends="_base"/>
+            <loader id="categoriesDl">
+                <query>
+                    <![CDATA[select e from Category e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <actions>
         <action id="commitAction" type="editor_commitClose"/>
@@ -20,6 +31,8 @@
         <formLayout id="form" dataContainer="productDc">
             <textField id="nameField" property="name"/>
             <textField id="priceField" property="price"/>
+            <entityComboBox id="categoryField" property="category"
+                            optionsContainer="categoriesDc"/>
         </formLayout>
         <hbox id="editActions">
             <button id="commitAndCloseBtn" action="commitAction"/>

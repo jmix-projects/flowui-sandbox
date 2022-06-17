@@ -29,7 +29,7 @@
             <textField id="amountField" property="amount" readOnly="true"/>
         </formLayout>
 
-        <hbox id="buttonsPanel">
+        <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="itemsTable.create"/>
             <button id="editBtn" action="itemsTable.edit"/>
             <button id="removeBtn" action="itemsTable.remove"/>

@@ -3,14 +3,12 @@ package com.company.demo.view.product;
 import com.company.demo.entity.Product;
 import com.company.demo.view.main.MainView;
 import com.vaadin.flow.router.Route;
-import io.jmix.flowui.screen.LookupComponent;
-import io.jmix.flowui.screen.StandardLookup;
-import io.jmix.flowui.screen.UiController;
-import io.jmix.flowui.screen.UiDescriptor;
+import io.jmix.flowui.screen.*;
 
 @Route(value = "products", layout = MainView.class)
 @UiController("Product.browse")
 @UiDescriptor("product-view.xml")
 @LookupComponent("productsTable")
+@DialogMode(width = "800px", height = "600px")
 public class ProductView extends StandardLookup<Product> {
 }

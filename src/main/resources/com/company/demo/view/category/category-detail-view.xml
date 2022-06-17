@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<screen xmlns="http://jmix.io/schema/flowui/screen"
+        title="msg://categoryDetailView.title"
+        focusComponent="form">
+    <data>
+        <instance id="categoryDc"
+                  class="com.company.demo.entity.Category">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="commitAction" type="editor_commitClose"/>
+        <action id="closeAction" type="editor_close"/>
+    </actions>
+    <layout expand="detailActions">
+        <formLayout id="form" dataContainer="categoryDc">
+            <textField id="nameField" property="name"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="commitAndCloseBtn" action="commitAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</screen>

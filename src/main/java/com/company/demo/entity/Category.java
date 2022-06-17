@@ -12,16 +12,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "PRODUCT", indexes = {
-        @Index(name = "IDX_PRODUCT_CATEGORY_ID", columnList = "CATEGORY_ID")
-})
+@Table(name = "CATEGORY")
 @Entity
-public class Product {
+public class Category {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -31,23 +28,6 @@ public class Product {
     @Column(name = "NAME", nullable = false)
     @NotNull
     private String name;
-
-    @Column(name = "PRICE", nullable = false, precision = 19, scale = 2)
-    @NotNull
-    private BigDecimal price;
-
-    @JoinColumn(name = "CATEGORY_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
-
-    @DeletedBy
-    @Column(name = "DELETED_BY")
-    private String deletedBy;
-
-    @DeletedDate
-    @Column(name = "DELETED_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deletedDate;
 
     @Column(name = "VERSION", nullable = false)
     @Version
@@ -71,12 +51,37 @@ public class Product {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
 
-    public Category getCategory() {
-        return category;
+    @DeletedBy
+    @Column(name = "DELETED_BY")
+    private String deletedBy;
+
+    @DeletedDate
+    @Column(name = "DELETED_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedDate;
+
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(Date deletedDate) {
+        this.deletedDate = deletedDate;
+    }
+
+    public String getDeletedBy() {
+        return deletedBy;
+    }
+
+    public void setDeletedBy(String deletedBy) {
+        this.deletedBy = deletedBy;
     }
 
     public Date getLastModifiedDate() {
@@ -111,44 +116,12 @@ public class Product {
         this.createdBy = createdBy;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getVersion() {
         return version;
     }
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Date getDeletedDate() {
-        return deletedDate;
-    }
-
-    public void setDeletedDate(Date deletedDate) {
-        this.deletedDate = deletedDate;
-    }
-
-    public String getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
     }
 
     public UUID getId() {
