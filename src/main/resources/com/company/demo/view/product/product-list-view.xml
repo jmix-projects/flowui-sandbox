@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen xmlns="http://jmix.io/schema/flowui/screen"
-        title="msg://ProductView.title"
+        xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+        title="msg://productListView.title"
         focusComponent="productsTable">
     <data readOnly="true">
         <collection id="productsDc"
@@ -8,20 +9,20 @@
             <fetchPlan extends="_base">
                 <property name="category" fetchPlan="_base"/>
             </fetchPlan>
-            <loader id="usersDl">
+            <loader id="productsDl">
                 <query>
-                    <![CDATA[select e from Product e order by e.name]]>
+                    <![CDATA[select e from Product e]]>
                 </query>
             </loader>
         </collection>
     </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <facets>
-        <dataLoadCoordinator auto="true"/>
-    </facets>
     <layout expand="productsTable">
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="productsTable.create"/>
@@ -29,8 +30,8 @@
             <button id="removeBtn" action="productsTable.remove"/>
         </hbox>
         <dataGrid id="productsTable"
-                    width="100%"
-                    dataContainer="productsDc">
+                  width="100%"
+                  dataContainer="productsDc">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
@@ -43,8 +44,8 @@
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">
-            <button action="selectAction"/>
-            <button action="discardAction"/>
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
         </hbox>
     </layout>
 </screen>

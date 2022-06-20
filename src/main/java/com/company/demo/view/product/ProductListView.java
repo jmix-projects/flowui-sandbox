@@ -7,8 +7,8 @@ import io.jmix.flowui.screen.*;
 
 @Route(value = "products", layout = MainView.class)
 @UiController("Product.browse")
-@UiDescriptor("product-view.xml")
+@UiDescriptor("product-list-view.xml")
 @LookupComponent("productsTable")
 @DialogMode(width = "800px", height = "600px")
-public class ProductView extends StandardLookup<Product> {
+public class ProductListView extends StandardLookup<Product> {
 }

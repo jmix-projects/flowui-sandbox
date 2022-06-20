@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen xmlns="http://jmix.io/schema/flowui/screen"
-        title="msg://ProductDetail.title"
+        title="msg://productDetailView.title"
         focusComponent="form">
     <data>
         <instance id="productDc"
@@ -20,21 +20,26 @@
             </loader>
         </collection>
     </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <actions>
         <action id="commitAction" type="editor_commitClose"/>
         <action id="closeAction" type="editor_close"/>
     </actions>
-    <facets>
-        <dataLoadCoordinator auto="true"/>
-    </facets>
-    <layout expand="editActions">
+    <layout expand="detailActions">
         <formLayout id="form" dataContainer="productDc">
             <textField id="nameField" property="name"/>
             <textField id="priceField" property="price"/>
             <entityComboBox id="categoryField" property="category"
-                            optionsContainer="categoriesDc"/>
+                            optionsContainer="categoriesDc">
+                <actions>
+                    <action id="entityLookup" type="entity_lookup"/>
+                    <action id="entityClear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
         </formLayout>
-        <hbox id="editActions">
+        <hbox id="detailActions">
             <button id="commitAndCloseBtn" action="commitAction"/>
             <button id="closeBtn" action="closeAction"/>
         </hbox>
