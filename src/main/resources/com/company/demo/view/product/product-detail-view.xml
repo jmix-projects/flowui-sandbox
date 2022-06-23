@@ -32,7 +32,7 @@
             <textField id="nameField" property="name"/>
             <textField id="priceField" property="price"/>
             <entityComboBox id="categoryField" property="category"
-                            optionsContainer="categoriesDc">
+                            itemsContainer="categoriesDc">
                 <actions>
                     <action id="entityLookup" type="entity_lookup"/>
                     <action id="entityClear" type="entity_clear"/>
@@ -42,6 +42,7 @@
         <hbox id="detailActions">
             <button id="commitAndCloseBtn" action="commitAction"/>
             <button id="closeBtn" action="closeAction"/>
+            <button id="setValueBtn" text="Set Value"/>
         </hbox>
     </layout>
 </screen>

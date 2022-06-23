@@ -37,7 +37,7 @@
                 </actions>
             </entityPicker>
             <entityComboBox id="productField" property="product"
-                            optionsContainer="productsDc">
+                            itemsContainer="productsDc">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
