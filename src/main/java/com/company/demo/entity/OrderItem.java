@@ -1,10 +1,8 @@
 package com.company.demo.entity;
 
-import io.jmix.core.DeletePolicy;
 import io.jmix.core.annotation.DeletedBy;
 import io.jmix.core.annotation.DeletedDate;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
-import io.jmix.core.entity.annotation.OnDelete;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,7 +31,6 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Order order;
 
-    @OnDelete(DeletePolicy.CASCADE)
     @JoinColumn(name = "PRODUCT_ID", nullable = false)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
