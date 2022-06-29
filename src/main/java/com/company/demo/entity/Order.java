@@ -38,6 +38,10 @@ public class Order {
     @NotNull
     private String number;
 
+    @Column(name = "STATUS", nullable = false)
+    @NotNull
+    private String status;
+
     @Column(name = "DATE_", nullable = false)
     @NotNull
     private LocalDateTime date;
@@ -86,6 +90,14 @@ public class Order {
     @Column(name = "LAST_MODIFIED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
+    public OrderStatus getStatus() {
+        return status == null ? null : OrderStatus.fromId(status);
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status == null ? null : status.getId();
+    }
 
     public List<OrderItem> getItems() {
         return items;
@@ -202,5 +214,6 @@ public class Order {
         number = "" + RandomUtils.nextInt();
         amount = BigDecimal.ZERO;
         date = LocalDateTime.now();
+        setStatus(OrderStatus.NEW);
     }
 }

@@ -37,6 +37,7 @@
             <columns>
                 <column property="date"/>
                 <column property="number"/>
+                <column property="status"/>
                 <column property="amount"/>
                 <column property="comment"/>
             </columns>
