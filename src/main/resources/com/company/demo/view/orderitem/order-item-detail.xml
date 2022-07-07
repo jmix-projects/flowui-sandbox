@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<screen xmlns="http://jmix.io/schema/flowui/screen"
+<view xmlns="http://jmix.io/schema/flowui/view"
         title="msg://OrderItemDetail.title"
         focusComponent="form">
     <data>
@@ -22,13 +22,13 @@
         </collection>
     </data>
     <actions>
-        <action id="commitAction" type="editor_commitClose"/>
-        <action id="closeAction" type="editor_close"/>
+        <action id="commitAction" type="detail_commitClose"/>
+        <action id="closeAction" type="detail_close"/>
     </actions>
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
-    <layout expand="editActions">
+    <layout expand="detailActions">
         <formLayout id="form" dataContainer="orderItemDc">
             <entityPicker id="orderField" property="order">
                 <actions>
@@ -45,9 +45,9 @@
             </entityComboBox>
             <textField id="quantityField" property="quantity"/>
         </formLayout>
-        <hbox id="editActions">
+        <hbox id="detailActions">
             <button id="commitAndCloseBtn" action="commitAction"/>
             <button id="closeBtn" action="closeAction"/>
         </hbox>
     </layout>
-</screen>
+</view>

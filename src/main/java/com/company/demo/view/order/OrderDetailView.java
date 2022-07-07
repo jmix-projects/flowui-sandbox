@@ -4,15 +4,15 @@ import com.company.demo.entity.Order;
 import com.company.demo.view.main.MainView;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RoutePrefix;
-import io.jmix.flowui.screen.EditedEntityContainer;
-import io.jmix.flowui.screen.StandardEditor;
-import io.jmix.flowui.screen.UiController;
-import io.jmix.flowui.screen.UiDescriptor;
+import io.jmix.flowui.view.EditedEntityContainer;
+import io.jmix.flowui.view.StandardDetailView;
+import io.jmix.flowui.view.UiController;
+import io.jmix.flowui.view.UiDescriptor;
 
 @Route(value = ":id", layout = MainView.class)
 @RoutePrefix("orders")
-@UiController("Order_.edit")
+@UiController("Order_.detail")
 @UiDescriptor("order-detail.xml")
 @EditedEntityContainer("orderDc")
-public class OrderDetail extends StandardEditor<Order> {
+public class OrderDetailView extends StandardDetailView<Order> {
 }

@@ -1,4 +1,4 @@
-<screen xmlns="http://jmix.io/schema/flowui/screen"
+<view xmlns="http://jmix.io/schema/flowui/view"
         title="msg://LoginView.title">
     <layout justifyContent="CENTER" alignItems="CENTER" className="jmix-login-main-layout">
         <loginForm id="login"
@@ -12,4 +12,4 @@
                           message="msg://loginForm.badCredentials"/>
         </loginForm>
     </layout>
-</screen>
+</view>

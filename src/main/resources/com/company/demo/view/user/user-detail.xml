@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<screen xmlns="http://jmix.io/schema/flowui/screen"
+<view xmlns="http://jmix.io/schema/flowui/view"
         title="msg://UserDetail.title"
         focusComponent="form">
     <data>
@@ -10,13 +10,13 @@
         </instance>
     </data>
     <actions>
-        <action id="commitAction" type="editor_commitClose"/>
-        <action id="closeAction" type="editor_close"/>
+        <action id="commitAction" type="detail_commitClose"/>
+        <action id="closeAction" type="detail_close"/>
     </actions>
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
-    <layout expand="editActions">
+    <layout expand="detailActions">
         <formLayout id="form" dataContainer="userDc">
             <textField id="usernameField" property="username" readOnly="true"/>
             <passwordField id="passwordField"
@@ -33,9 +33,9 @@
             <comboBox id="timeZoneField" property="timeZoneId"/>
             <checkbox id="activeField" property="active"/>
         </formLayout>
-        <hbox id="editActions">
+        <hbox id="detailActions">
             <button id="commitAndCloseBtn" action="commitAction"/>
             <button id="closeBtn" action="closeAction"/>
         </hbox>
     </layout>
-</screen>
+</view>
