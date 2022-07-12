@@ -7,7 +7,7 @@ import io.jmix.flowui.view.*;
 
 @Route(value = "orders", layout = MainView.class)
 @UiController("Order_.list")
-@UiDescriptor("order-view.xml")
+@UiDescriptor("order-view-view.xml")
 @LookupComponent("ordersTable")
 @DialogMode(width = "800px", height = "600px")
 public class OrderListView extends StandardListView<Order> {

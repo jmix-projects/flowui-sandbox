@@ -12,7 +12,7 @@ import io.jmix.flowui.view.UiDescriptor;
 @Route(value = ":id", layout = MainView.class)
 @RoutePrefix("orders")
 @UiController("Order_.detail")
-@UiDescriptor("order-detail.xml")
+@UiDescriptor("order-detail-view.xml")
 @EditedEntityContainer("orderDc")
 public class OrderDetailView extends StandardDetailView<Order> {
 }

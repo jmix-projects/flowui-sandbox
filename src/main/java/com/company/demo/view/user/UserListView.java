@@ -7,7 +7,7 @@ import io.jmix.flowui.view.*;
 
 @Route(value = UserListView.ROUTE, layout = MainView.class)
 @UiController("User.list")
-@UiDescriptor("user-view.xml")
+@UiDescriptor("user-view-view.xml")
 @LookupComponent("usersTable")
 @DialogMode(width = "800px", height = "600px")
 public class UserListView extends StandardListView<User> {
