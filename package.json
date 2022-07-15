@@ -120,6 +120,7 @@
     "lit": "2.2.3"
   },
   "devDependencies": {
+    "@webpack-cli/serve": "1.6.1",
     "async": "3.2.2",
     "chokidar": "^3.5.0",
     "compression-webpack-plugin": "4.0.1",
@@ -402,6 +403,6 @@
       "workbox-precaching": "6.5.0",
       "workbox-webpack-plugin": "6.5.0"
     },
-    "hash": "cf2fe21113dc6f15c1dc8d78816e35dcbc1df4e585e22a70133e720ca26265f5"
+    "hash": "4ca03b811aff1d9a2c3b5950a832623e50a46857528244c2f64126bbc1f1f933"
   }
 }

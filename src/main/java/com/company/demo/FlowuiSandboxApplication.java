@@ -19,7 +19,7 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 
 @SpringBootApplication
-@Theme(value = "flowuisandbox", variant = Lumo.DARK)
+@Theme(value = "flowuisandbox", variant = Lumo.LIGHT)
 public class FlowuiSandboxApplication implements AppShellConfigurator {
 
     @Autowired
