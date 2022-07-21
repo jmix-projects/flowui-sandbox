@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-        title="msg://OrderView.title"
-        focusComponent="ordersTable">
+      title="msg://OrderView.title"
+      focusComponent="ordersTable">
     <data readOnly="true">
         <collection id="ordersDc"
                     class="com.company.demo.entity.Order">
@@ -27,8 +27,8 @@
             <button id="removeBtn" action="ordersTable.remove"/>
         </hbox>
         <dataGrid id="ordersTable"
-                    width="100%"
-                    dataContainer="ordersDc">
+                  width="100%"
+                  dataContainer="ordersDc">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>

@@ -9,6 +9,6 @@ import io.jmix.flowui.view.*;
 @UiController("Product.list")
 @UiDescriptor("product-list-view.xml")
 @LookupComponent("productsTable")
-@DialogMode(width = "800px", height = "600px")
+@DialogMode(width = "50em", height = "37.5em")
 public class ProductListView extends StandardListView<Product> {
 }

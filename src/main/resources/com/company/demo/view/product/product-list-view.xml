@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-        xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
-        title="msg://productListView.title"
-        focusComponent="productsTable">
+      title="msg://productListView.title"
+      focusComponent="productsTable">
     <data readOnly="true">
         <collection id="productsDc"
                     class="com.company.demo.entity.Product">
@@ -28,6 +27,7 @@
             <button id="createBtn" action="productsTable.create"/>
             <button id="editBtn" action="productsTable.edit"/>
             <button id="removeBtn" action="productsTable.remove"/>
+            <button id="testBtn" action="productsTable.test" themeName="primary success"/>
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"
@@ -36,6 +36,11 @@
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
+                <action id="test" trackSelection="true"
+                        text="Test"
+                        icon="ACADEMY_CAP"
+                        actionVariant="SUCCESS"
+                        description="DESCRIPTION"/>
             </actions>
             <columns>
                 <column property="name"/>

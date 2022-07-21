@@ -9,6 +9,6 @@ import io.jmix.flowui.view.*;
 @UiController("Category.list")
 @UiDescriptor("category-list-view.xml")
 @LookupComponent("categoriesTable")
-@DialogMode(width = "800px", height = "600px")
+@DialogMode(width = "50em", height = "37.5em")
 public class CategoryListView extends StandardListView<Category> {
 }

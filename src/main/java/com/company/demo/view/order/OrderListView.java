@@ -9,6 +9,6 @@ import io.jmix.flowui.view.*;
 @UiController("Order_.list")
 @UiDescriptor("order-view-view.xml")
 @LookupComponent("ordersTable")
-@DialogMode(width = "800px", height = "600px")
+@DialogMode(width = "50em", height = "37.5em")
 public class OrderListView extends StandardListView<Order> {
 }
