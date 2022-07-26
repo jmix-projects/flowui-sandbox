@@ -2,6 +2,7 @@ package com.company.demo;
 
 import com.google.common.base.Strings;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import javax.sql.DataSource;
 
 @SpringBootApplication
 @Theme(value = "flowuisandbox", variant = Lumo.LIGHT)
+@PWA(name = "Jmix Flow UI Sandbox", shortName = "Jmix Flow UI Sandbox")
 public class FlowuiSandboxApplication implements AppShellConfigurator {
 
     @Autowired
