@@ -27,7 +27,7 @@
         <action id="commitAction" type="detail_commitClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
-    <layout expand="detailActions">
+    <layout>
         <formLayout id="form" dataContainer="productDc">
             <textField id="nameField" property="name"/>
             <textField id="priceField" property="price"/>

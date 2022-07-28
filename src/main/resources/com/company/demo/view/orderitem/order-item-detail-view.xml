@@ -28,7 +28,7 @@
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
-    <layout expand="detailActions">
+    <layout>
         <formLayout id="form" dataContainer="orderItemDc">
             <entityPicker id="orderField" property="order">
                 <actions>

@@ -16,7 +16,7 @@
         <action id="commitAction" type="detail_commitClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
-    <layout expand="detailActions">
+    <layout>
         <formLayout id="form" dataContainer="categoryDc">
             <textField id="nameField" property="name"/>
         </formLayout>
