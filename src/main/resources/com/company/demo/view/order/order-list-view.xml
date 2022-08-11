@@ -20,7 +20,7 @@
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
-    <layout expand="ordersTable">
+    <layout>
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="ordersTable.create"/>
             <button id="editBtn" action="ordersTable.edit"/>

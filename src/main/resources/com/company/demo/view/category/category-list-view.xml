@@ -21,8 +21,8 @@
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout expand="categoriesTable">
-        <hbox id="buttonsPanel" width="100%">
+    <layout>
+        <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="categoriesTable.create"/>
             <button id="editBtn" action="categoriesTable.edit"/>
             <button id="removeBtn" action="categoriesTable.remove"/>

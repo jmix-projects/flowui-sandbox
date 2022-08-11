@@ -22,12 +22,11 @@
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout expand="productsTable">
+    <layout>
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="productsTable.create"/>
             <button id="editBtn" action="productsTable.edit"/>
             <button id="removeBtn" action="productsTable.remove"/>
-            <button id="testBtn" action="productsTable.test" themeName="primary success"/>
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"
