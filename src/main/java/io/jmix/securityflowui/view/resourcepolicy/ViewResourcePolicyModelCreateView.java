@@ -9,6 +9,7 @@ import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.textarea.JmixTextArea;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.component.validation.ValidationErrors;
+import io.jmix.flowui.kit.component.FlowuiComponentUtils;
 import io.jmix.flowui.menu.MenuItem;
 import io.jmix.flowui.view.*;
 import io.jmix.security.model.ResourcePolicy;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @UiController("sec_ViewResourcePolicyModel.create")
 @UiDescriptor("view-resource-policy-model-create-view.xml")
@@ -50,10 +50,7 @@ public class ViewResourcePolicyModelCreateView extends MultipleResourcePolicyMod
 
     @Subscribe
     public void onInit(InitEvent event) {
-        Map<String, String> optionsMap = resourcePolicyEditorUtils.getViewsOptionsMap();
-
-        viewField.setItems(optionsMap.keySet());
-        viewField.setItemLabelGenerator(optionsMap::get);
+        FlowuiComponentUtils.setItemsMap(viewField, resourcePolicyEditorUtils.getViewsOptionsMap());
         viewField.addValueChangeListener(this::onViewFieldValueChange);
     }
 

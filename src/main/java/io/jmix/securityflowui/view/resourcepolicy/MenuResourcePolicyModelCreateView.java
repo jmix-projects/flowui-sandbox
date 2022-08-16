@@ -24,6 +24,7 @@ import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.component.validation.ValidationErrors;
+import io.jmix.flowui.kit.component.FlowuiComponentUtils;
 import io.jmix.flowui.menu.MenuItem;
 import io.jmix.flowui.view.*;
 import io.jmix.security.model.ResourcePolicy;
@@ -35,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @UiController("sec_MenuResourcePolicyModel.create")
 @UiDescriptor("menu-resource-policy-model-create-view.xml")
@@ -65,10 +65,7 @@ public class MenuResourcePolicyModelCreateView extends MultipleResourcePolicyMod
 
     @Subscribe
     public void onInit(InitEvent event) {
-        Map<String, String> optionsMap = resourcePolicyEditorUtils.getMenuItemOptionsMap();
-
-        menuItemField.setItems(optionsMap.keySet());
-        menuItemField.setItemLabelGenerator(optionsMap::get);
+        FlowuiComponentUtils.setItemsMap(menuItemField, resourcePolicyEditorUtils.getMenuItemOptionsMap());
         menuItemField.addValueChangeListener(this::onMenuItemFieldValueChange);
     }
 

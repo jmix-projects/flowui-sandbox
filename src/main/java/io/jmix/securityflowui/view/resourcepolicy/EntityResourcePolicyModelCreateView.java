@@ -2,7 +2,7 @@ package io.jmix.securityflowui.view.resourcepolicy;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -13,6 +13,7 @@ import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.component.validation.ValidationErrors;
 import io.jmix.flowui.data.items.EnumDataProvider;
+import io.jmix.flowui.kit.component.FlowuiComponentUtils;
 import io.jmix.flowui.view.*;
 import io.jmix.security.model.ResourcePolicyEffect;
 import io.jmix.security.model.ResourcePolicyType;
@@ -31,7 +32,8 @@ import java.util.stream.Collectors;
 @DialogMode(width = "32em")
 public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyModelCreateView {
 
-    private static final Set<Actions> ALL_ACTION = Sets.newHashSet(Actions.class.getEnumConstants());
+    private static final Set<EntityPolicyAction> ALL_ACTION =
+            Sets.newHashSet(EntityPolicyAction.class.getEnumConstants());
 
     @ComponentId
     private JmixComboBox<String> entityField;
@@ -40,7 +42,7 @@ public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyM
     @ComponentId
     private JmixCheckbox allActions;
     @ComponentId
-    private JmixCheckboxGroup<Actions> actionsGroup;
+    private JmixCheckboxGroup<EntityPolicyAction> actionsGroup;
 
     @Autowired
     private ResourcePolicyViewUtils resourcePolicyEditorUtils;
@@ -54,19 +56,16 @@ public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyM
 
     @Subscribe
     public void onInit(InitEvent event) {
-        Map<String, String> optionsMap = resourcePolicyEditorUtils.getEntityOptionsMap();
-
-        entityField.setItems(optionsMap.keySet());
-        entityField.setItemLabelGenerator(optionsMap::get);
+        FlowuiComponentUtils.setItemsMap(entityField, resourcePolicyEditorUtils.getEntityOptionsMap());
         entityField.addValueChangeListener(this::onEntityFieldValueChange);
 
-        actionsGroup.setItems(new EnumDataProvider<>(Actions.class));
+        actionsGroup.setItems(new EnumDataProvider<>(EntityPolicyAction.class));
         actionsGroup.addValueChangeListener(this::onActionGroupValueChange);
 
         allActions.addValueChangeListener(this::onAllActionValueChange);
     }
 
-    private void onEntityFieldValueChange(AbstractField.ComponentValueChangeEvent<ComboBox<String>, String> event) {
+    private void onEntityFieldValueChange(ComponentValueChangeEvent<ComboBox<String>, String> event) {
         String entityName = event.getValue();
         String policyGroup = resourcePolicyGroupResolver.resolvePolicyGroup(ResourcePolicyType.ENTITY, entityName);
         if (policyGroup != null) {
@@ -76,7 +75,8 @@ public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyM
         }
     }
 
-    private void onActionGroupValueChange(AbstractField.ComponentValueChangeEvent<CheckboxGroup<Actions>, Set<Actions>> event) {
+    private void onActionGroupValueChange(
+            ComponentValueChangeEvent<CheckboxGroup<EntityPolicyAction>, Set<EntityPolicyAction>> event) {
         long size = actionsGroup.getListDataView().getItems().count();
 
         if (event.getValue().size() == size) {
@@ -90,7 +90,7 @@ public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyM
         }
     }
 
-    private void onAllActionValueChange(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
+    private void onAllActionValueChange(ComponentValueChangeEvent<Checkbox, Boolean> event) {
         if (Boolean.TRUE.equals(event.getValue())) {
             actionsGroup.setValue(ALL_ACTION);
         } else {
@@ -134,15 +134,7 @@ public class EntityResourcePolicyModelCreateView extends MultipleResourcePolicyM
 
     private Set<String> getPolicyActions() {
         return actionsGroup.getValue().stream()
-                .map(action ->
-                        action.name().toLowerCase())
+                .map(EntityPolicyAction::getId)
                 .collect(Collectors.toSet());
-    }
-
-    enum Actions {
-        CREATE,
-        READ,
-        UPDATE,
-        DELETE
     }
 }
