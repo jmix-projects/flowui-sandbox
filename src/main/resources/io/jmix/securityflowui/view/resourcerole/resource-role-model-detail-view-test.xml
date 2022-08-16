@@ -63,7 +63,7 @@
                               width="100%">
                         <actions>
                             <action id="createMenuPolicy" text="msg://actions.menuPolicy.text"/>
-                            <action id="createScreenPolicy" text="msg://actions.screenPolicy.text"/>
+                            <action id="createViewPolicy" text="msg://actions.viewPolicy.text"/>
                             <action id="createEntityPolicy" text="msg://actions.entityPolicy.text"/>
                             <action id="createEntityAttributePolicy" text="msg://actions.entityAttributePolicy.text"/>
                             <action id="createGraphQLPolicy" text="msg://actions.graphQLPolicy.text"/>

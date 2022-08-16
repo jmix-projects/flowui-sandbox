@@ -30,6 +30,7 @@ import io.jmix.core.DataManager;
 import io.jmix.core.LoadContext;
 import io.jmix.core.Messages;
 import io.jmix.core.Metadata;
+import io.jmix.flowui.DialogWindowBuilders;
 import io.jmix.flowui.component.checkboxgroup.JmixCheckboxGroup;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -52,6 +53,10 @@ import io.jmix.securityflowui.model.BaseRoleModel;
 import io.jmix.securityflowui.model.ResourcePolicyModel;
 import io.jmix.securityflowui.model.ResourceRoleModel;
 import io.jmix.securityflowui.model.RoleModelConverter;
+import io.jmix.securityflowui.view.resourcepolicy.EntityResourcePolicyModelCreateView;
+import io.jmix.securityflowui.view.resourcepolicy.MenuResourcePolicyModelCreateView;
+import io.jmix.securityflowui.view.resourcepolicy.MultipleResourcePolicyModelCreateView;
+import io.jmix.securityflowui.view.resourcepolicy.ViewResourcePolicyModelCreateView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,10 +106,11 @@ public class ResourceRoleModelDetailViewTest extends StandardDetailView<Resource
     private Metadata metadata;
     @Autowired
     private Messages messages;
+    @Autowired
+    private DialogWindowBuilders dialogBuilders;
 
     private boolean openedByCreateAction = false;
     private Set<UUID> forRemove = new HashSet<>();
-    ;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -239,42 +245,50 @@ public class ResourceRoleModelDetailViewTest extends StandardDetailView<Resource
 
     @Subscribe("resourcePoliciesTable.createMenuPolicy")
     public void onResourcePoliciesTableCreateMenuPolicy(ActionPerformedEvent event) {
-        Notification.show("createMenuPolicy");
-        /*screenBuilders.screen(this)
-                .withScreenClass(MenuResourcePolicyModelCreate.class)
-                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesScreen)
-                .build()
-                .show();*/
+        dialogBuilders.view(this, MenuResourcePolicyModelCreateView.class)
+                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesView)
+                .open();
     }
 
-    @Subscribe("resourcePoliciesTable.createScreenPolicy")
-    public void onResourcePoliciesTableCreateScreen(ActionPerformedEvent event) {
-        Notification.show("createScreenPolicy");
-        /*screenBuilders.screen(this)
-                .withScreenClass(ScreenResourcePolicyModelCreate.class)
-                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesScreen)
-                .build()
-                .show();*/
+    @Subscribe("resourcePoliciesTable.createViewPolicy")
+    public void onResourcePoliciesTableCreateViewPolicy(ActionPerformedEvent event) {
+        dialogBuilders.view(this, ViewResourcePolicyModelCreateView.class)
+                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesView)
+                .open();
     }
 
     @Subscribe("resourcePoliciesTable.createEntityPolicy")
-    public void onResourcePoliciesTableCreateEntity(ActionPerformedEvent event) {
-        Notification.show("createEntityPolicy");
-        /*screenBuilders.screen(this)
-                .withScreenClass(EntityResourcePolicyModelCreate.class)
-                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesScreen)
-                .build()
-                .show();*/
+    public void onResourcePoliciesTableCreateEntityPolicy(ActionPerformedEvent event) {
+        dialogBuilders.view(this, EntityResourcePolicyModelCreateView.class)
+                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesView)
+                .open();
     }
 
     @Subscribe("resourcePoliciesTable.createEntityAttributePolicy")
-    public void onResourcePoliciesTableCreateEntityAttribute(ActionPerformedEvent event) {
-        Notification.show("createEntityAttributePolicy");
-        /*screenBuilders.screen(this)
-                .withScreenClass(EntityAttributeResourcePolicyModelCreate.class)
-                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesScreen)
-                .build()
-                .show();*/
+    public void onResourcePoliciesTableCreateEntityAttributePolicy(ActionPerformedEvent event) {
+        /*dialogBuilders.view(this, EntityAttributeResourcePolicyModelCreateView.class)
+                .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesView)
+                .open();*/
+    }
+
+    private void addPoliciesFromMultiplePoliciesView(
+            DialogWindow.AfterCloseEvent<? extends MultipleResourcePolicyModelCreateView> closeEvent) {
+        if (closeEvent.closedWith(StandardOutcome.COMMIT)) {
+            MultipleResourcePolicyModelCreateView view = closeEvent.getSource().getView();
+            for (ResourcePolicyModel resourcePolicyModel : view.getResourcePolicies()) {
+                boolean policyExists = resourcePoliciesDc.getItems().stream()
+                        .anyMatch(rpm ->
+                                resourcePolicyModel.getType().equals(rpm.getType())
+                                        && resourcePolicyModel.getAction().equals(rpm.getAction())
+                                        && resourcePolicyModel.getResource().equals(rpm.getResource())
+                        );
+
+                if (!policyExists) {
+                    ResourcePolicyModel mergedResourcePolicyModel = getDataContext().merge(resourcePolicyModel);
+                    resourcePoliciesDc.getMutableItems().add(mergedResourcePolicyModel);
+                }
+            }
+        }
     }
 
     @Subscribe("resourcePoliciesTable.createGraphQLPolicy")

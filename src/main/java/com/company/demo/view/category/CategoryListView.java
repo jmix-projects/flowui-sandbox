@@ -11,4 +11,5 @@ import io.jmix.flowui.view.*;
 @LookupComponent("categoriesTable")
 @DialogMode(width = "50em", height = "37.5em")
 public class CategoryListView extends StandardListView<Category> {
+
 }
