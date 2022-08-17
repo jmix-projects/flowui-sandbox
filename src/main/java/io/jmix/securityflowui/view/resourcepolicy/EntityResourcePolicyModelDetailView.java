@@ -7,10 +7,6 @@ import io.jmix.flowui.view.*;
 import io.jmix.securityflowui.model.ResourcePolicyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @UiController("sec_EntityResourcePolicyModel.detail")
 @UiDescriptor("entity-resource-policy-model-detail-view.xml")
 @EditedEntityContainer("resourcePolicyModelDc")
@@ -28,10 +24,6 @@ public class EntityResourcePolicyModelDetailView extends StandardDetailView<Reso
     @Subscribe
     public void onInit(InitEvent event) {
         FlowuiComponentUtils.setItemsMap(entityField, resourcePolicyEditorUtils.getEntityOptionsMap());
-
-        List<String> actions = Arrays.stream(EntityPolicyAction.values())
-                .map(EntityPolicyAction::getId)
-                .collect(Collectors.toList());
-        actionField.setItems(actions);
+        resourcePolicyEditorUtils.setEnumItemsAsString(actionField, EntityPolicyAction.class);
     }
 }

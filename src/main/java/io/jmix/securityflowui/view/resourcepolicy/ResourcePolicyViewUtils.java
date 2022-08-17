@@ -16,11 +16,17 @@
 
 package io.jmix.securityflowui.view.resourcepolicy;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Streams;
+import com.vaadin.flow.component.ItemLabelGenerator;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.provider.HasListDataView;
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
 import io.jmix.core.Metadata;
 import io.jmix.core.MetadataTools;
+import io.jmix.core.metamodel.datatype.impl.EnumClass;
 import io.jmix.core.metamodel.model.MetaClass;
 import io.jmix.core.metamodel.model.MetaProperty;
 import io.jmix.flowui.menu.MenuConfig;
@@ -69,11 +75,19 @@ public class ResourcePolicyViewUtils {
         return result;
     }
 
-    public Map<String, String> getEntityAttributeOptionsMap(String entityName) {
-        MetaClass metaClass = metadata.getClass(entityName);
+    public Map<String, String> getEntityAttributeOptionsMap(@Nullable String entityName) {
+        if (Strings.isNullOrEmpty(entityName)) {
+            return Collections.emptyMap();
+        }
+
         Map<String, String> result = new LinkedHashMap<>();
         result.put("*", messages.getMessage(ResourcePolicyViewUtils.class, "allAttributes"));
 
+        if ("*".equals(entityName)) {
+            return result;
+        }
+
+        MetaClass metaClass = metadata.getClass(entityName);
         result.putAll(
                 Streams.concat(metaClass.getProperties().stream(),
                                 metadataTools.getAdditionalProperties(metaClass).stream())
@@ -207,5 +221,27 @@ public class ResourcePolicyViewUtils {
 
     protected String throwDuplicateException(String v1, String v2) {
         throw new RuntimeException(String.format("Duplicate key for values %s and %s", v1, v2));
+    }
+
+    public <T extends Enum<T> & EnumClass<String>> void setEnumItemsAsString(ComboBox<String> comboBox, Class<T> enumClass) {
+        setEnumItemsAsStringInternal(comboBox, enumClass);
+        comboBox.setItemLabelGenerator(createItemLabelGenerator(enumClass));
+    }
+
+    public <T extends Enum<T> & EnumClass<String>> void setEnumItemsAsString(Select<String> select, Class<T> enumClass) {
+        setEnumItemsAsStringInternal(select, enumClass);
+        select.setItemLabelGenerator(createItemLabelGenerator(enumClass));
+    }
+
+    protected <T extends Enum<T> & EnumClass<String>> void setEnumItemsAsStringInternal(HasListDataView<String, ?> component,
+                                                                                        Class<T> enumClass) {
+        List<String> actions = Arrays.stream(enumClass.getEnumConstants())
+                .map(T::getId)
+                .collect(Collectors.toList());
+        component.setItems(actions);
+    }
+
+    protected <T extends Enum<T> & EnumClass<String>> ItemLabelGenerator<String> createItemLabelGenerator(Class<T> enumClass) {
+        return item -> metadataTools.format(Enum.valueOf(enumClass, item.toUpperCase()));
     }
 }

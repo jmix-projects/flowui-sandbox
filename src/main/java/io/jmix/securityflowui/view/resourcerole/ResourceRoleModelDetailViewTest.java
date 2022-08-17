@@ -99,7 +99,7 @@ public class ResourceRoleModelDetailViewTest extends StandardDetailView<Resource
     private DialogWindowBuilders dialogBuilders;
 
     private boolean openedByCreateAction = false;
-    private Set<UUID> forRemove = new HashSet<>();
+    private final Set<UUID> forRemove = new HashSet<>();
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -255,9 +255,9 @@ public class ResourceRoleModelDetailViewTest extends StandardDetailView<Resource
 
     @Subscribe("resourcePoliciesTable.createEntityAttributePolicy")
     private void onResourcePoliciesTableCreateEntityAttributePolicy(ActionPerformedEvent event) {
-        /*dialogBuilders.view(this, EntityAttributeResourcePolicyModelCreateView.class)
+        dialogBuilders.view(this, EntityAttributeResourcePolicyModelCreateView.class)
                 .withAfterCloseListener(this::addPoliciesFromMultiplePoliciesView)
-                .open();*/
+                .open();
     }
 
     private void addPoliciesFromMultiplePoliciesView(
@@ -340,8 +340,8 @@ public class ResourceRoleModelDetailViewTest extends StandardDetailView<Resource
                 return ViewResourcePolicyModelDetailView.class;
             case ResourcePolicyType.ENTITY:
                 return EntityResourcePolicyModelDetailView.class;
-//            case ResourcePolicyType.ENTITY_ATTRIBUTE:
-//                return EntityAttributeResourcePolicyModelDetailView.class;
+            case ResourcePolicyType.ENTITY_ATTRIBUTE:
+                return EntityAttributeResourcePolicyModelDetailView.class;
             case ResourcePolicyType.GRAPHQL:
                 return GraphQLResourcePolicyModelDetailView.class;
             case ResourcePolicyType.SPECIFIC:

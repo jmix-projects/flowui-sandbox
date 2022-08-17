@@ -1,6 +1,10 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="msg://entityResourcePolicyModelCreateView.title"
+      title="msg://entityAttributeResourcePolicyModelCreateView.title"
       focusComponent="form">
+    <data>
+        <collection id="attributesDc"
+                    class="io.jmix.securityflowui.view.resourcepolicy.AttributeResourceModel"/>
+    </data>
     <actions>
         <action id="commitAction"/>
         <action id="closeAction" type="view_close"/>
@@ -13,13 +17,16 @@
                        label="msg://io.jmix.securityflowui.model/ResourcePolicyModel.policyGroup"/>
         </formLayout>
 
-        <h4 text="msg://entityResourcePolicyModelCreateView.actions"/>
+        <h4 text="msg://entityAttributeResourcePolicyModelCreateView.attributes"/>
 
-        <checkbox id="allActions"
-                  label="msg://entityResourcePolicyModelCreateView.allActions.label"/>
-
-        <checkboxGroup id="actionsGroup"
-                       themeName="vertical"/>
+        <dataGrid id="attributesTable"
+                  dataContainer="attributesDc"
+                  selectionMode="NONE"
+                  width="100%">
+            <columns>
+                <column property="caption"/>
+            </columns>
+        </dataGrid>
 
         <hbox id="detailActions">
             <button id="commitAndCloseBtn" action="commitAction"/>
