@@ -15,6 +15,6 @@
  */
 
 @NonNullApi
-package io.jmix.securityflowui.view.resourcepolicy;
+package io.jmix.securityflowui.view.rowlevelrole;
 
 import org.springframework.lang.NonNullApi;
