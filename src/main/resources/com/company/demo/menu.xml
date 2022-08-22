@@ -8,9 +8,7 @@
         <item view="User.list" title="msg://com.company.demo.view.user/UserView.title"/>
     </menu>
 
-    <menu id="administration" title="msg://com.company.demo/menu.administration.title" opened="true">
-        <item view="sec_ResourceRoleModel.list" title="msg://io.jmix.securityflowui.view.resourcerole/resourceRoleModelListView.menu"/>
-        <item view="sec_RowLevelRoleModel.list" title="msg://io.jmix.securityflowui.view.rowlevelrole/rowLevelRoleModelListView.menu"/>
+    <menu id="administration" opened="true">
     </menu>
 
 </menu-config>
