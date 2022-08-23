@@ -28,6 +28,7 @@
         </hbox>
         <dataGrid id="ordersTable"
                   width="100%"
+                  minHeight="20em"
                   dataContainer="ordersDc">
             <actions>
                 <action id="create" type="create"/>

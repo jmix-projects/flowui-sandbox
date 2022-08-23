@@ -29,6 +29,7 @@
         </hbox>
         <dataGrid id="categoriesTable"
                   width="100%"
+                  minHeight="20em"
                   dataContainer="categoriesDc">
             <actions>
                 <action id="create" type="create"/>
