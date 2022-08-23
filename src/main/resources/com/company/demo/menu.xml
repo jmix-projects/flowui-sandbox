@@ -8,4 +8,7 @@
         <item view="User.list" title="msg://com.company.demo.view.user/UserView.title"/>
     </menu>
 
+    <menu id="administration" opened="true">
+    </menu>
+
 </menu-config>

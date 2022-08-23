@@ -30,16 +30,12 @@
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"
+                  minHeight="20em"
                   dataContainer="productsDc">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
-                <action id="test" trackSelection="true"
-                        text="Test"
-                        icon="ACADEMY_CAP"
-                        actionVariant="SUCCESS"
-                        description="DESCRIPTION"/>
             </actions>
             <columns>
                 <column property="name"/>
