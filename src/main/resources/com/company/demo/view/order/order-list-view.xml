@@ -24,6 +24,7 @@
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="ordersTable.create"/>
             <button id="editBtn" action="ordersTable.edit"/>
+            <button id="readBtn" action="ordersTable.read"/>
             <button id="removeBtn" action="ordersTable.remove"/>
         </hbox>
         <dataGrid id="ordersTable"
@@ -33,6 +34,11 @@
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
+                <action id="read" type="read">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
                 <action id="remove" type="remove"/>
             </actions>
             <columns>

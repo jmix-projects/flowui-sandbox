@@ -26,7 +26,9 @@
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="productsTable.create"/>
             <button id="editBtn" action="productsTable.edit"/>
+            <button id="readBtn" action="productsTable.read"/>
             <button id="removeBtn" action="productsTable.remove"/>
+            <button id="refreshBtn" action="productsTable.refresh"/>
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"
@@ -35,7 +37,9 @@
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
+                <action id="read" type="read"/>
                 <action id="remove" type="remove"/>
+                <action id="refresh" type="refresh"/>
             </actions>
             <columns>
                 <column property="name"/>

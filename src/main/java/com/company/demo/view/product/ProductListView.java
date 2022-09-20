@@ -6,8 +6,8 @@ import com.vaadin.flow.router.Route;
 import io.jmix.flowui.view.*;
 
 @Route(value = "products", layout = MainView.class)
-@UiController("Product.list")
-@UiDescriptor("product-list-view.xml")
+@ViewController("Product.list")
+@ViewDescriptor("product-list-view.xml")
 @LookupComponent("productsTable")
 @DialogMode(width = "50em", height = "37.5em")
 public class ProductListView extends StandardListView<Product> {

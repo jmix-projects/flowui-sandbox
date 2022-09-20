@@ -17,18 +17,18 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 @Route(value = "users/:id", layout = MainView.class)
-@UiController("User.detail")
-@UiDescriptor("user-detail-view.xml")
+@ViewController("User.detail")
+@ViewDescriptor("user-detail-view.xml")
 @EditedEntityContainer("userDc")
 public class UserDetailView extends StandardDetailView<User> {
 
-    @ComponentId
+    @ViewComponent
     private TypedTextField<String> usernameField;
-    @ComponentId
+    @ViewComponent
     private PasswordField passwordField;
-    @ComponentId
+    @ViewComponent
     private PasswordField confirmPasswordField;
-    @ComponentId
+    @ViewComponent
     private ComboBox<String> timeZoneField;
 
     @Autowired
