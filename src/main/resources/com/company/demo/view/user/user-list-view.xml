@@ -26,6 +26,22 @@
             <button id="editBtn" action="usersTable.edit"/>
             <button id="removeBtn" action="usersTable.remove"/>
             <button id="showRoleAssignmentsBtn" action="usersTable.showRoleAssignments"/>
+            <!--<dropdownButton id="additionalMenu" text="msg://additionalMenu" icon="COG">
+                <items>
+                    <actionItem ref="usersTable.changePassword"/>
+                    <actionItem ref="usersTable.resetPassword"/>
+                    <actionItem>
+                        <action id="test" text="Test" icon="ALIGN_JUSTIFY"/>
+                    </actionItem>
+                    <separator/>
+                    <textItem text="Text Item"/>
+                    <componentItem>
+                        <hbox>
+                            <p text="Component Item"/>
+                        </hbox>
+                    </componentItem>
+                </items>
+            </dropdownButton>-->
         </hbox>
         <dataGrid id="usersTable"
                   width="100%"
@@ -36,6 +52,8 @@
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
                 <action id="showRoleAssignments" type="showRoleAssignments"/>
+                <action id="changePassword" type="changePassword"/>
+                <action id="resetPassword" type="resetPassword"/>
             </actions>
             <columns>
                 <column property="username"/>
