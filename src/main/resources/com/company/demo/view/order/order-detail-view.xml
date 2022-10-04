@@ -14,6 +14,15 @@
             <loader/>
             <collection id="itemsDc" property="items"/>
         </instance>
+        <collection id="customersDc"
+                    class="com.company.demo.entity.Customer">
+            <fetchPlan extends="_base"/>
+            <loader id="customersDl">
+                <query>
+                    <![CDATA[select e from Customer e order by e.name]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
@@ -25,11 +34,17 @@
     <layout>
         <formLayout id="form" dataContainer="orderDc">
             <textField id="numberField" property="number" readOnly="true"/>
+            <entityComboBox id="customerField" property="customer" itemsContainer="customersDc">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
             <select id="statusField" property="status"/>
             <dateTimePicker id="dateField" property="date"/>
             <textField id="amountField" property="amount" readOnly="true"/>
+            <textArea id="commentField" property="comment" height="9.5em"/>
         </formLayout>
-
         <hbox id="buttonsPanel" className="buttons-panel">
             <button id="createBtn" action="itemsTable.create"/>
             <button id="editBtn" action="itemsTable.edit"/>

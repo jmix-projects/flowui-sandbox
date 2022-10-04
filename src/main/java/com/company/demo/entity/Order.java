@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "ORDER_")
+@Table(name = "ORDER_", indexes = {
+        @Index(name = "IDX_ORDER__CUSTOMER", columnList = "CUSTOMER_ID")
+})
 @Entity(name = "Order_")
 public class Order {
     @JmixGeneratedValue
@@ -37,6 +39,10 @@ public class Order {
     @Column(name = "NUMBER_", nullable = false)
     @NotNull
     private String number;
+
+    @JoinColumn(name = "CUSTOMER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Customer customer;
 
     @Column(name = "STATUS", nullable = false)
     @NotNull
@@ -90,6 +96,14 @@ public class Order {
     @Column(name = "LAST_MODIFIED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
     public OrderStatus getStatus() {
         return status == null ? null : OrderStatus.fromId(status);
@@ -204,9 +218,11 @@ public class Order {
     }
 
     @InstanceName
-    @DependsOnProperties({"number"})
+    @DependsOnProperties({"number", "customer"})
     public String getInstanceName() {
-        return String.format("%s", number);
+        return String.format("%s %s", number,
+                customer != null ? customer.getName() : "")
+                .trim();
     }
 
     @PostConstruct

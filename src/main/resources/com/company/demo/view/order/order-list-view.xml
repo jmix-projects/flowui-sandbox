@@ -42,8 +42,9 @@
                 <action id="remove" type="remove"/>
             </actions>
             <columns>
-                <column property="date"/>
                 <column property="number"/>
+                <column property="customer"/>
+                <column property="date"/>
                 <column property="status"/>
                 <column property="amount"/>
                 <column property="comment"/>
