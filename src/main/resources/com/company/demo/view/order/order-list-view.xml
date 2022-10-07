@@ -21,7 +21,7 @@
         <dataLoadCoordinator auto="true"/>
     </facets>
     <layout>
-        <hbox id="buttonsPanel" className="buttons-panel">
+        <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createBtn" action="ordersTable.create"/>
             <button id="editBtn" action="ordersTable.edit"/>
             <button id="readBtn" action="ordersTable.read"/>

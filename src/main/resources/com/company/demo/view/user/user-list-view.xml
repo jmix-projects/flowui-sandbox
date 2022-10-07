@@ -21,7 +21,7 @@
         <dataLoadCoordinator auto="true"/>
     </facets>
     <layout>
-        <hbox id="buttonsPanel" className="buttons-panel">
+        <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createBtn" action="usersTable.create"/>
             <button id="editBtn" action="usersTable.edit"/>
             <button id="removeBtn" action="usersTable.remove"/>
@@ -46,6 +46,7 @@
         <dataGrid id="usersTable"
                   width="100%"
                   minHeight="20em"
+                  selectionMode="MULTI"
                   dataContainer="usersDc">
             <actions>
                 <action id="create" type="create"/>
