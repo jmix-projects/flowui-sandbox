@@ -71,9 +71,4 @@ public class UserDetailView extends StandardDetailView<User> {
             getEditedEntity().setPassword(passwordEncoder.encode(passwordField.getValue()));
         }
     }
-
-    @Override
-    public String getPageTitle() {
-        return "TEST";
-    }
 }

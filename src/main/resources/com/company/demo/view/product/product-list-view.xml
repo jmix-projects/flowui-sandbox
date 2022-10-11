@@ -29,6 +29,8 @@
             <button id="readBtn" action="productsTable.read"/>
             <button id="removeBtn" action="productsTable.remove"/>
             <button id="refreshBtn" action="productsTable.refresh"/>
+
+            <simplePagination dataLoader="productsDl"/>
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"

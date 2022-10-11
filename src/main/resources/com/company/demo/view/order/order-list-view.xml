@@ -6,7 +6,7 @@
         <collection id="ordersDc"
                     class="com.company.demo.entity.Order">
             <fetchPlan extends="_base"/>
-            <loader id="usersDl">
+            <loader id="ordersDl">
                 <query>
                     <![CDATA[select e from Order_ e order by e.date desc]]>
                 </query>
@@ -26,6 +26,8 @@
             <button id="editBtn" action="ordersTable.edit"/>
             <button id="readBtn" action="ordersTable.read"/>
             <button id="removeBtn" action="ordersTable.remove"/>
+
+            <simplePagination dataLoader="ordersDl"/>
         </hbox>
         <dataGrid id="ordersTable"
                   width="100%"

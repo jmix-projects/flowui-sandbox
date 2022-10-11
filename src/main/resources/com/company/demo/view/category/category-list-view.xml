@@ -26,6 +26,8 @@
             <button id="createBtn" action="categoriesTable.create"/>
             <button id="editBtn" action="categoriesTable.edit"/>
             <button id="removeBtn" action="categoriesTable.remove"/>
+
+            <simplePagination dataLoader="categoriesDl"/>
         </hbox>
         <dataGrid id="categoriesTable"
                   width="100%"

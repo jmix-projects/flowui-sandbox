@@ -28,20 +28,11 @@
             <button id="showRoleAssignmentsBtn" action="usersTable.showRoleAssignments"/>
             <!--<dropdownButton id="additionalMenu" text="msg://additionalMenu" icon="COG">
                 <items>
-                    <actionItem ref="usersTable.changePassword"/>
-                    <actionItem ref="usersTable.resetPassword"/>
-                    <actionItem>
-                        <action id="test" text="Test" icon="ALIGN_JUSTIFY"/>
-                    </actionItem>
-                    <separator/>
-                    <textItem text="Text Item"/>
-                    <componentItem>
-                        <hbox>
-                            <p text="Component Item"/>
-                        </hbox>
-                    </componentItem>
+                    <actionItem id="changePassword" ref="usersTable.changePassword"/>
+                    <actionItem id="resetPassword" ref="usersTable.resetPassword"/>
                 </items>
             </dropdownButton>-->
+            <simplePagination dataLoader="usersDl"/>
         </hbox>
         <dataGrid id="usersTable"
                   width="100%"
