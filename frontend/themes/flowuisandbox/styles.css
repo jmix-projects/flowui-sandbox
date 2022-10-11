@@ -1,3 +1,3 @@
-.buttons-panel .jmix-simple-pagination {
+.buttons-panel .jmix-simple-pagination:last-child {
   margin-left: auto;
 }
