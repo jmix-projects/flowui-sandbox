@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
-    <menu id="application" title="msg://com.company.demo/menu.application.title" opened="true" insertBefore="administration">
+    <menu id="application" title="msg://com.company.demo/menu.application.title" opened="true">
+        <item view="User.list" title="msg://com.company.demo.view.user/UserView.title"/>
         <item view="Order_.list" title="msg://com.company.demo.view.order/OrderView.menu"/>
         <item view="Customer.list" title="msg://com.company.demo.view.customer/customerListView.title"/>
         <item view="Product.list" title="msg://com.company.demo.view.product/productListView.menu"/>
         <item view="Category.list" title="msg://com.company.demo.view.category/categoryListView.menu"/>
-    </menu>
-
-    <menu id="administration" opened="true">
-        <item view="User.list" title="msg://com.company.demo.view.user/UserView.title"/>
     </menu>
 
 </menu-config>

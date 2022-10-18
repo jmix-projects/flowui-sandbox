@@ -36,11 +36,7 @@
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
-                <action id="read" type="read">
-                    <properties>
-                        <property name="openMode" value="DIALOG"/>
-                    </properties>
-                </action>
+                <action id="read" type="read"/>
                 <action id="remove" type="remove"/>
             </actions>
             <columns>
