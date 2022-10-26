@@ -16,8 +16,8 @@
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
-        <queryParameters id="queryParameters">
-            <pagination id="paginationParams" component="pagination"/>
+        <queryParameters>
+            <pagination component="pagination"/>
         </queryParameters>
     </facets>
     <actions>
