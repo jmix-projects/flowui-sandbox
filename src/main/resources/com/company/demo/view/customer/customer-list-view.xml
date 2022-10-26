@@ -16,6 +16,9 @@
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
+        <queryParameters id="queryParameters">
+            <pagination id="paginationParams" component="pagination"/>
+        </queryParameters>
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
@@ -27,7 +30,7 @@
             <button id="editBtn" action="customersTable.edit"/>
             <button id="removeBtn" action="customersTable.remove"/>
 
-            <simplePagination dataLoader="customersDl"/>
+            <simplePagination id="pagination" dataLoader="customersDl"/>
         </hbox>
         <dataGrid id="customersTable"
                   width="100%"

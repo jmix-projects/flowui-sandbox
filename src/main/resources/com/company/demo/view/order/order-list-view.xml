@@ -19,6 +19,9 @@
     </actions>
     <facets>
         <dataLoadCoordinator auto="true"/>
+        <queryParameters id="queryParameters">
+            <pagination id="paginationParams" component="pagination"/>
+        </queryParameters>
     </facets>
     <layout>
         <hbox id="buttonsPanel" classNames="buttons-panel">
@@ -27,7 +30,7 @@
             <button id="readBtn" action="ordersTable.read"/>
             <button id="removeBtn" action="ordersTable.remove"/>
 
-            <simplePagination dataLoader="ordersDl"/>
+            <simplePagination id="pagination" dataLoader="ordersDl"/>
         </hbox>
         <dataGrid id="ordersTable"
                   width="100%"
