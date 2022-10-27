@@ -44,7 +44,7 @@
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="read" type="read"/>
-                <action id="remove" type="remove" icon="TRASH"/>
+                <action id="remove" type="remove"/>
                 <action id="refresh" type="refresh"/>
             </actions>
             <columns>
