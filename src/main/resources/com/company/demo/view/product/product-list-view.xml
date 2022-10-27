@@ -18,9 +18,8 @@
     <facets>
         <dataLoadCoordinator id="dataLoadCoordinator" auto="true"/>
 
-        <queryParameters id="queryParameters">
-            <pagination id="paginationParams" component="pagination"/>
-<!--            <pagination id="paginationParams" component="pagination" firstResultParam="offset" maxResultsParam="limit"/>-->
+        <queryParameters>
+            <pagination component="pagination"/>
         </queryParameters>
     </facets>
     <actions>
@@ -34,10 +33,8 @@
             <button id="readBtn" action="productsTable.read"/>
             <button id="removeBtn" action="productsTable.remove"/>
             <button id="refreshBtn" action="productsTable.refresh"/>
-            <button id="generateDataBtn" text="Generate" icon="DATABASE"/>
-            <button id="dialogBtn" text="Dialog" icon="DIAMOND"/>
 
-            <simplePagination id="pagination" dataLoader="productsDl" itemsPerPageVisible="true" itemsPerPageUnlimitedItemVisible="true"/>
+            <simplePagination id="pagination" dataLoader="productsDl"/>
         </hbox>
         <dataGrid id="productsTable"
                   width="100%"
