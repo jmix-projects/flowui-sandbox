@@ -2,11 +2,11 @@ package com.company.demo.view.user;
 
 import com.company.demo.entity.User;
 import com.company.demo.view.main.MainView;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.EntityStates;
 import io.jmix.flowui.Notifications;
+import io.jmix.flowui.component.combobox.JmixComboBox;
+import io.jmix.flowui.component.textfield.JmixPasswordField;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ public class UserDetailView extends StandardDetailView<User> {
     @ViewComponent
     private TypedTextField<String> usernameField;
     @ViewComponent
-    private PasswordField passwordField;
+    private JmixPasswordField passwordField;
     @ViewComponent
-    private PasswordField confirmPasswordField;
+    private JmixPasswordField confirmPasswordField;
     @ViewComponent
-    private ComboBox<String> timeZoneField;
+    private JmixComboBox<String> timeZoneField;
 
     @Autowired
     private EntityStates entityStates;

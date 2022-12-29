@@ -33,6 +33,7 @@ dependencies {
     implementation 'io.jmix.flowui:jmix-flowui-data-starter'
     implementation 'io.jmix.flowui:jmix-flowui-starter'
     implementation 'io.jmix.flowui:jmix-flowui-themes'
+    implementation 'io.jmix.localfs:jmix-localfs-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 

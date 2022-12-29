@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
       xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
-      title="msg://customerListView.title"
-      focusComponent="customersTable">
+      title="msg://fileListView.title"
+      focusComponent="filesTable">
     <data readOnly="true">
-        <collection id="customersDc"
-                    class="com.company.demo.entity.Customer">
+        <collection id="filesDc"
+                    class="com.company.demo.entity.File">
             <fetchPlan extends="_base"/>
-            <loader id="customersDl">
+            <loader id="filesDl">
                 <query>
-                    <![CDATA[select e from Customer e]]>
+                    <![CDATA[select e from File_ e]]>
                 </query>
             </loader>
         </collection>
@@ -25,26 +25,22 @@
         <action id="discardAction" type="lookup_discard"/>
     </actions>
     <layout>
-        <hbox id="buttonsPanel" classNames="buttons-panel">
-            <button id="createBtn" action="customersTable.create"/>
-            <button id="editBtn" action="customersTable.edit"/>
-            <button id="removeBtn" action="customersTable.remove"/>
+        <hbox id="buttonsPanel" classNames="buttons-panel" alignItems="END">
+            <button id="downloadBtn" action="filesTable.download"/>
+            <button id="removeBtn" action="filesTable.remove"/>
 
-            <simplePagination id="pagination" dataLoader="customersDl"/>
+            <simplePagination id="pagination" dataLoader="filesDl"/>
         </hbox>
-        <dataGrid id="customersTable"
-                  selectionMode="MULTI"
+        <dataGrid id="filesTable"
                   width="100%"
                   minHeight="20em"
-                  dataContainer="customersDc">
+                  dataContainer="filesDc">
             <actions>
-                <action id="create" type="create"/>
-                <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
+                <action id="download" type="itemTracking" text="Download" icon="DOWNLOAD"/>
             </actions>
             <columns>
-                <column property="name"/>
-                <column property="email"/>
+                <column property="file"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

@@ -7,6 +7,8 @@
         <item view="Customer.list" title="msg://com.company.demo.view.customer/customerListView.title"/>
         <item view="Product.list" title="msg://com.company.demo.view.product/productListView.menu"/>
         <item view="Category.list" title="msg://com.company.demo.view.category/categoryListView.menu"/>
+        <item view="File_.list" title="msg://com.company.demo.view.file/fileListView.title"/>
+        <item view="Project.list" title="msg://com.company.demo.view.project/projectListView.title"/>
     </menu>
 
 </menu-config>

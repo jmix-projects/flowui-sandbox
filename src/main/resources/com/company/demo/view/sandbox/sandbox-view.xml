@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Sandbox">
+    <data>
+        <instance id="orderDc"
+                  class="com.company.demo.entity.Order">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+
+        <collection id="ordersDc" class="com.company.demo.entity.Order">
+            <loader>
+                <query>
+                    <![CDATA[select e from Order_ e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout>
+        <hbox>
+            <textField id="amountField"/>
+            <button id="setEntityValueBtn" text="Set Value To Entity"/>
+            <button id="setSourceValueBtn" text="Set Value To Value source"/>
+            <button id="writeBtn" text="Write"/>
+            <button id="discardBtn" text="Discard"/>
+            <button id="modifiedBtn" text="is Modified?"/>
+        </hbox>
+    </layout>
+</view>

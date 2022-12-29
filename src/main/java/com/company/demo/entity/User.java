@@ -9,10 +9,12 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.security.authentication.JmixUserDetails;
 import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
@@ -23,7 +25,7 @@ import java.util.UUID;
 public class User implements JmixUserDetails, HasTimeZone {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     @JmixGeneratedValue
     private UUID id;
 
@@ -55,8 +57,21 @@ public class User implements JmixUserDetails, HasTimeZone {
     @Column(name = "TIME_ZONE_ID")
     protected String timeZoneId;
 
+    @JoinTable(name = "PROJECT_USER_LINK",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
+    @ManyToMany
+    private List<Project> projects;
     @Transient
     protected Collection<? extends GrantedAuthority> authorities;
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
 
     public UUID getId() {
         return id;

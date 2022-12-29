@@ -5,6 +5,7 @@ import io.jmix.core.annotation.DeletedDate;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.pessimisticlocking.PessimisticLock;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -21,6 +22,7 @@ import java.util.UUID;
         @Index(name = "IDX_PRODUCT_CATEGORY_ID", columnList = "CATEGORY_ID")
 })
 @Entity
+@PessimisticLock
 public class Product {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
