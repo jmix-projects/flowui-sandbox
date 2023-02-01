@@ -24,11 +24,35 @@
         </queryParameters>
     </facets>
     <layout>
+        <details id="filterWrapper" summaryText="Filter" opened="true" width="100%">
+            <formLayout id="filterFields">
+
+            </formLayout>
+
+            <hbox id="actionsPanel">
+                <comboButton id="refreshBtn" text="msg:///actions.Refresh" icon="REFRESH" themeNames="primary success">
+                    <items>
+                        <textItem id="test" text="Test"/>
+                    </items>
+                </comboButton>
+
+                <button id="addConditionBtn" text="Add search condition" themeNames="tertiary"/>
+
+                <dropdownButton icon="COG" classNames="filter-settings">
+                    <items>
+                        <textItem id="test1" text="Test 1"/>
+                        <textItem id="test2" text="Test 2"/>
+                        <textItem id="test3" text="Test 3"/>
+                    </items>
+                </dropdownButton>
+            </hbox>
+        </details>
+
         <hbox id="buttonsPanel" classNames="buttons-panel" alignItems="CENTER">
             <button id="createBtn" action="usersTable.create"/>
             <button id="editBtn" action="usersTable.edit"/>
             <button id="removeBtn" action="usersTable.remove"/>
-            <button id="refreshBtn" action="usersTable.refresh"/>
+<!--            <button id="refreshBtn" action="usersTable.refresh"/>-->
             <button id="showRoleAssignmentsBtn" action="usersTable.showRoleAssignments"/>
 
             <dropdownButton id="additionalMenu" text="msg://additionalMenu" icon="COG">

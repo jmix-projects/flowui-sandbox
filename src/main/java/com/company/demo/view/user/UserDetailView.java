@@ -30,6 +30,8 @@ public class UserDetailView extends StandardDetailView<User> {
     private JmixPasswordField confirmPasswordField;
     @ViewComponent
     private JmixComboBox<String> timeZoneField;
+    @ViewComponent
+    private TypedTextField<String> firstNameField;
 
     @Autowired
     private EntityStates entityStates;
@@ -43,6 +45,17 @@ public class UserDetailView extends StandardDetailView<User> {
     @Subscribe
     public void onInit(InitEvent event) {
         timeZoneField.setItems(List.of(TimeZone.getAvailableIDs()));
+
+        firstNameField.addValueChangeListener(vce -> {
+            notifications.create("ValueChange",
+                            vce.getValue() + ": " + vce.isFromClient())
+                    .show();
+        });
+        firstNameField.addTypedValueChangeListener(vce -> {
+            notifications.create("TypedValueChange",
+                            vce.getValue() + ": " + vce.isFromClient())
+                    .show();
+        });
     }
 
     @Subscribe
@@ -58,6 +71,13 @@ public class UserDetailView extends StandardDetailView<User> {
             usernameField.focus();
         }
     }
+
+    @Subscribe
+    public void onValidation(ValidationEvent event) {
+
+    }
+
+
 
     @Subscribe
     protected void onBeforeSave(BeforeSaveEvent event) {

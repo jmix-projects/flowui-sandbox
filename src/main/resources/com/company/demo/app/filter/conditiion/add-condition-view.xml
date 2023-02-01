@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://addConditionView.title"
+      focusComponent="categoriesTable">
+    <data readOnly="true">
+        <collection id="filterConditionsDc"
+                    class="com.company.demo.entity.filter.FilterCondition">
+            <fetchPlan extends="_local">
+                <property name="parent" fetchPlan="_local"/>
+            </fetchPlan>
+            <loader id="filterConditionsDl"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <textField id="conditionFilterField"
+                   placeholder="msg://conditionFilterField.placeholder"
+                   width="100%"/>
+
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+
+        </hbox>
+        <treeDataGrid id="filterConditionsTreeDataGrid"
+                      dataContainer="filterConditionsDc"
+                      hierarchyProperty="parent"
+                      selectionMode="MULTI"
+                      themeNames="no-row-borders"
+                      width="100%">
+            <columns>
+                <column property="localizedLabel"/>
+            </columns>
+        </treeDataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

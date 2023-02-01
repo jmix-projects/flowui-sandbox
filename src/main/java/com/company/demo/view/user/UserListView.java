@@ -7,7 +7,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.editor.EditorEvent;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.UiComponents;
@@ -80,9 +79,6 @@ public class UserListView extends StandardListView<User> {
                         .show());
 
 
-
-
-
         editor.addOpenListener(this::onEditorOpen);
         editor.addCloseListener(this::onEditorClose);
         editor.addSaveListener(this::onEditorSave);
@@ -136,6 +132,11 @@ public class UserListView extends StandardListView<User> {
         item.setLastName("GORELOV " + RandomStringUtils.randomAlphabetic(2));
     }
 
+    @Subscribe("addConditionBtn")
+    public void onAddConditionBtnClick(ClickEvent<Button> event) {
+
+    }
+
 
     /*timeZoneField.setStatusHandler(context -> {
         if (Strings.isNullOrEmpty(context.getDescription())) {
@@ -146,4 +147,6 @@ public class UserListView extends StandardListView<User> {
                 .withThemeVariant(NotificationVariant.LUMO_ERROR)
                 .show();
     });*/
+
+
 }

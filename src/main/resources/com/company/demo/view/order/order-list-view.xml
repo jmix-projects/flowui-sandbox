@@ -24,6 +24,10 @@
         </queryParameters>
     </facets>
     <layout>
+<!--        <hbox id="filterBox">-->
+<!--            <propertyFilter property="status" operation="EQUAL" dataLoader="ordersDl"/>-->
+<!--        </hbox>-->
+
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createBtn" action="ordersTable.create"/>
             <button id="editBtn" action="ordersTable.edit"/>
@@ -31,6 +35,16 @@
             <button id="removeBtn" action="ordersTable.remove"/>
 
             <simplePagination id="pagination" dataLoader="ordersDl"/>
+
+            <dropdownButton id="db">
+                <items>
+                    <textItem id="ti1" text="Text"/>
+                    <textItem id="ti2" text="Text"/>
+                    <textItem id="ti3" text="Text"/>
+                </items>
+            </dropdownButton>
+
+            <button id="btn" text="Focus Pocus"/>
         </hbox>
         <dataGrid id="ordersTable"
                   width="100%"

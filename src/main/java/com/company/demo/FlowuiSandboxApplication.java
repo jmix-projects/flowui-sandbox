@@ -1,10 +1,21 @@
 package com.company.demo;
 
+import com.company.demo.component.filter.registration.FilterComponentRegistration;
+import com.company.demo.component.filter.registration.FilterComponentRegistrationBuilder;
+import com.company.demo.component.groupfilter.GroupFilter;
+import com.company.demo.component.groupfilter.GroupFilterConverter;
+import com.company.demo.component.jpqlfilter.JpqlFilterConverter;
+import com.company.demo.component.propertyfilter.PropertyFilterConverter;
+import com.company.demo.entity.filter.GroupFilterCondition;
+import com.company.demo.entity.filter.JpqlFilterCondition;
+import com.company.demo.entity.filter.PropertyFilterCondition;
 import com.google.common.base.Strings;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import io.jmix.flowui.component.jpqlfilter.JpqlFilter;
+import io.jmix.flowui.component.propertyfilter.PropertyFilter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -51,5 +62,32 @@ public class FlowuiSandboxApplication implements AppShellConfigurator {
                 + "http://localhost:"
                 + environment.getProperty("local.server.port")
                 + Strings.nullToEmpty(environment.getProperty("server.servlet.context-path")));
+    }
+
+
+
+
+    @Bean("flowui_PropertyFilterRegistration")
+    public FilterComponentRegistration registerPropertyFilter() {
+        return FilterComponentRegistrationBuilder.create(PropertyFilter.class,
+                        PropertyFilterCondition.class,
+                        PropertyFilterConverter.class)
+                .build();
+    }
+
+    @Bean("flowui_JpqlFilterRegistration")
+    public FilterComponentRegistration registerJpqlFilter() {
+        return FilterComponentRegistrationBuilder.create(JpqlFilter.class,
+                        JpqlFilterCondition.class,
+                        JpqlFilterConverter.class)
+                .build();
+    }
+
+    @Bean("flowui_GroupFilterRegistration")
+    public FilterComponentRegistration registerGroupFilter() {
+        return FilterComponentRegistrationBuilder.create(GroupFilter.class,
+                        GroupFilterCondition.class,
+                        GroupFilterConverter.class)
+                .build();
     }
 }

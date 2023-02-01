@@ -1,0 +1,7 @@
+.filter-settings {
+  margin-inline-start: auto;
+}
+
+.jmix-simple-pagination-navigation-button vaadin-icon[dir='rtl'] {
+  rotate: 180deg;
+}

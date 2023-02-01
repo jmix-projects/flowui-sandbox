@@ -26,8 +26,10 @@
     </actions>
     <layout>
         <hbox id="buttonsPanel" classNames="buttons-panel" alignItems="END">
-            <button id="downloadBtn" action="filesTable.download"/>
+            <button id="createBtn" action="filesTable.create"/>
+            <button id="editBtn" action="filesTable.edit"/>
             <button id="removeBtn" action="filesTable.remove"/>
+            <button id="downloadBtn" action="filesTable.download"/>
 
             <simplePagination id="pagination" dataLoader="filesDl"/>
         </hbox>
@@ -36,6 +38,8 @@
                   minHeight="20em"
                   dataContainer="filesDc">
             <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
                 <action id="download" type="itemTracking" text="Download" icon="DOWNLOAD"/>
             </actions>

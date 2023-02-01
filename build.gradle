@@ -34,10 +34,14 @@ dependencies {
     implementation 'io.jmix.flowui:jmix-flowui-starter'
     implementation 'io.jmix.flowui:jmix-flowui-themes'
     implementation 'io.jmix.localfs:jmix-localfs-starter'
+//    implementation 'io.jmix.quartz:jmix-quartz-starter'
+//    implementation 'io.jmix.quartz:jmix-quartz-flowui-starter'
+    implementation 'io.jmix.appsettings:jmix-appsettings-starter'
+    implementation 'io.jmix.appsettings:jmix-appsettings-flowui-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    kit 'io.jmix.flowui:jmix-flowui-kit'
+    implementation 'io.jmix.flowui:jmix-flowui-kit'
 
     runtimeOnly 'org.hsqldb:hsqldb'
 

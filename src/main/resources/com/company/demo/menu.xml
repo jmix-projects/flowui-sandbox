@@ -9,6 +9,8 @@
         <item view="Category.list" title="msg://com.company.demo.view.category/categoryListView.menu"/>
         <item view="File_.list" title="msg://com.company.demo.view.file/fileListView.title"/>
         <item view="Project.list" title="msg://com.company.demo.view.project/projectListView.title"/>
+        <item view="flowui_AddConditionView"
+              title="msg://com.company.demo.app.filter.conditiion/addConditionView.title"/>
     </menu>
 
 </menu-config>
