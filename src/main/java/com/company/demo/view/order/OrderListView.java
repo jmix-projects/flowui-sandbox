@@ -1,6 +1,8 @@
 package com.company.demo.view.order;
 
 import com.company.demo.component.filter.Filter;
+import com.company.demo.component.filter.LogicalFilterComponent;
+import com.company.demo.component.groupfilter.GroupFilter;
 import com.company.demo.entity.Order;
 import com.company.demo.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
@@ -12,11 +14,13 @@ import com.vaadin.flow.router.Route;
 import io.jmix.core.metamodel.model.MetaClass;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.component.SupportsLabelPosition;
 import io.jmix.flowui.component.propertyfilter.SingleFilterSupport;
 import io.jmix.flowui.kit.component.dropdownbutton.DropdownButton;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.flowui.view.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "orders", layout = MainView.class)
@@ -42,6 +46,7 @@ public class OrderListView extends StandardListView<Order> {
     private DropdownButton db;
     @Autowired
     private Notifications notifications;
+    private GroupFilter groupFilter;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -68,6 +73,10 @@ public class OrderListView extends StandardListView<Order> {
                 notifications.create("CollectionChangeListener: " + changeEvent.getChangeType())
                         .withPosition(Notification.Position.BOTTOM_END)
                         .show());
+
+        groupFilter = ((GroupFilter) filter.getCurrentConfiguration().getRootLogicalFilterComponent());
+
+//        filter.setLabelPosition(SupportsLabelPosition.LabelPosition.TOP);
     }
 
     protected HasValueAndElement generateValueComponent(Class<?> paramType) {
@@ -77,8 +86,9 @@ public class OrderListView extends StandardListView<Order> {
 
     @Subscribe("btn")
     public void onBtnClick(ClickEvent<Button> event) {
-        Element element = db.getElement();
-        element.executeJs("setTimeout(function(){$0.focus()},0)", element);
+        /*Element element = db.getElement();
+        element.executeJs("setTimeout(function(){$0.focus()},0)", element);*/
+        groupFilter.setSummaryText("TEST SUMMARY " + RandomStringUtils.randomAlphanumeric(2));
     }
 
 

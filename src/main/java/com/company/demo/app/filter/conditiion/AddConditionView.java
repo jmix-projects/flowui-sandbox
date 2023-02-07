@@ -9,7 +9,6 @@ import com.vaadin.flow.router.Route;
 import io.jmix.core.LoadContext;
 import io.jmix.core.Messages;
 import io.jmix.core.metamodel.model.MetaClass;
-import io.jmix.flowui.component.SupportsTypedValue;
 import io.jmix.flowui.component.SupportsTypedValue.TypedValueChangeEvent;
 import io.jmix.flowui.component.grid.TreeDataGrid;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -31,8 +30,6 @@ import java.util.stream.Collectors;
 @DialogMode(width = "25em", height = "37.5em")
 public class AddConditionView extends StandardListView<FilterCondition> {
 
-//    @ViewComponent
-//    protected TypedTextField<String> conditionFilterField;
     @ViewComponent
     protected TreeDataGrid<FilterCondition> filterConditionsTreeDataGrid;
 
@@ -45,8 +42,8 @@ public class AddConditionView extends StandardListView<FilterCondition> {
     protected List<FilterCondition> conditions = new ArrayList<>();
     protected List<FilterCondition> rootConditions = new ArrayList<>();
     protected List<FilterCondition> foundConditions = new ArrayList<>();
-    protected MetaClass filterMetaClass;
     protected HeaderFilterCondition propertiesHeaderCondition;
+    protected MetaClass filterMetaClass;
 
     protected Configuration currentFilterConfiguration;
 

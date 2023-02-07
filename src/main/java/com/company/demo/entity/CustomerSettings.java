@@ -33,9 +33,6 @@ public class CustomerSettings extends AppSettingsEntity {
     @Column(name = "DEFAULT_ORDER_STATUS")
     private String defaultOrderStatus;
 
-    @Column(name = "DEFAULT_ORDER_STATUS_COPY")
-    private String defaultOrderStatusCopy;
-
     @Column(name = "SETTING1")
     private String setting1;
 
@@ -83,14 +80,6 @@ public class CustomerSettings extends AppSettingsEntity {
 
     @Column(name = "SETTING8_COPY")
     private String setting8Copy;
-
-    public OrderStatus getDefaultOrderStatusCopy() {
-        return defaultOrderStatusCopy == null ? null : OrderStatus.fromId(defaultOrderStatusCopy);
-    }
-
-    public void setDefaultOrderStatusCopy(OrderStatus defaultOrderStatusCopy) {
-        this.defaultOrderStatusCopy = defaultOrderStatusCopy == null ? null : defaultOrderStatusCopy.getId();
-    }
 
     public BigDecimal getSalesThresholdCopy() {
         return salesThresholdCopy;

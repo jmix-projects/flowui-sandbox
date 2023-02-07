@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+@SuppressWarnings("JmixInternalElementUsage")
 @ActionType(FilterAddConditionAction.ID)
 public class FilterAddConditionAction extends FilterAction<FilterAddConditionAction> implements AdjustWhenViewReadOnly {
 
@@ -113,6 +114,7 @@ public class FilterAddConditionAction extends FilterAction<FilterAddConditionAct
 
     @Override
     public void execute() {
+        checkTarget();
         List<FilterCondition> allConditions = builder.buildConditions(target);
         openAddConditionScreen(allConditions);
     }
@@ -133,7 +135,7 @@ public class FilterAddConditionAction extends FilterAction<FilterAddConditionAct
             for (FilterCondition selectedCondition : context.getSelectedItems()) {
                 if (selectedCondition instanceof HeaderFilterCondition) {
                     String text = messages.formatMessage("",
-                            "addConditionAction.invalidCondition",
+                            "actions.Filter.AddCondition.invalidCondition",
                             selectedCondition.getLocalizedLabel());
 
                     notifications.create(text)
@@ -185,8 +187,8 @@ public class FilterAddConditionAction extends FilterAction<FilterAddConditionAct
                                                      Configuration currentConfiguration) {
         boolean dataLoadNeeded = false;
         if (filterComponent instanceof LogicalFilterComponent) {
-            for (FilterComponent childComponent : ((LogicalFilterComponent) filterComponent).getOwnFilterComponents()) {
-                boolean nonNullDefaultValue = setFilterComponentDefaultValue(childComponent, currentConfiguration);
+            for (FilterComponent child : ((LogicalFilterComponent<?>) filterComponent).getOwnFilterComponents()) {
+                boolean nonNullDefaultValue = setFilterComponentDefaultValue(child, currentConfiguration);
                 if (nonNullDefaultValue) {
                     dataLoadNeeded = true;
                 }
@@ -205,23 +207,6 @@ public class FilterAddConditionAction extends FilterAction<FilterAddConditionAct
     }
 
     protected void openAddConditionScreen(List<FilterCondition> filterConditions) {
-        // TODO: gg, implement
-        /*if (target.getFrame() == null) {
-            throw new IllegalStateException("Filter component is not attached to the Frame");
-        }
-
-        AddConditionScreen addConditionScreen = dialogWindows.lookup(FilterCondition.class)
-                .withOpenMode(OpenMode.DIALOG)
-                .withScreenClass(AddConditionScreen.class)
-                .withSelectValidator(selectValidator)
-                .withSelectHandler(selectHandler)
-                .build();
-
-        addConditionScreen.setConditions(filterConditions);
-        addConditionScreen.setCurrentFilterConfiguration(filter.getCurrentConfiguration());
-
-        addConditionScreen.show();*/
-
         View<?> origin = UiComponentUtils.findView(target);
         if (origin == null) {
             throw new IllegalStateException(String.format("A component '%s' is not attached to a view",

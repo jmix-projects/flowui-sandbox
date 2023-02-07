@@ -17,6 +17,7 @@
 package com.company.demo.component.filter;
 
 import com.company.demo.action.filter.FilterAction;
+import com.company.demo.action.filter.FilterClearValuesAction;
 import com.company.demo.component.filter.configuration.RunTimeConfiguration;
 import com.google.common.collect.ImmutableSet;
 import io.jmix.core.annotation.Internal;
@@ -38,8 +39,8 @@ public class FilterSupport {
         this.actions = actions;
     }
 
-    public List<FilterAction> getDefaultFilterActions(Filter filter) {
-        List<FilterAction> filterActions = new ArrayList<>();
+    public List<FilterAction<?>> getDefaultFilterActions(Filter filter) {
+        List<FilterAction<?>> filterActions = new ArrayList<>();
         for (Class<? extends FilterAction> actionClass : getDefaultFilterActionClasses()) {
             filterActions.add(createFilterAction(actionClass, filter));
         }
@@ -79,7 +80,7 @@ public class FilterSupport {
 
     public Map<String, Object> initConfigurationValuesMap(Configuration configuration) {
         Map<String, Object> valuesMap = new HashMap<>();
-        LogicalFilterComponent rootLogicalComponent = configuration.getRootLogicalFilterComponent();
+        LogicalFilterComponent<?> rootLogicalComponent = configuration.getRootLogicalFilterComponent();
         for (FilterComponent filterComponent : rootLogicalComponent.getFilterComponents()) {
             if (filterComponent instanceof SingleFilterComponentBase) {
                 String parameterName = ((SingleFilterComponentBase<?>) filterComponent).getParameterName();
@@ -92,7 +93,7 @@ public class FilterSupport {
     }
 
     public void resetConfigurationValuesMap(Configuration configuration, Map<String, Object> valuesMap) {
-        LogicalFilterComponent rootLogicalComponent = configuration.getRootLogicalFilterComponent();
+        LogicalFilterComponent<?> rootLogicalComponent = configuration.getRootLogicalFilterComponent();
         for (FilterComponent filterComponent : rootLogicalComponent.getFilterComponents()) {
             if (filterComponent instanceof SingleFilterComponent) {
                 ((SingleFilterComponentBase) filterComponent).setValue(
@@ -102,7 +103,7 @@ public class FilterSupport {
     }
 
     public void refreshConfigurationValuesMap(Configuration configuration, Map<String, Object> valuesMap) {
-        LogicalFilterComponent rootLogicalComponent = configuration.getRootLogicalFilterComponent();
+        LogicalFilterComponent<?> rootLogicalComponent = configuration.getRootLogicalFilterComponent();
         for (FilterComponent filterComponent : rootLogicalComponent.getFilterComponents()) {
             if (filterComponent instanceof SingleFilterComponentBase) {
                 String parameterName = ((SingleFilterComponentBase<?>) filterComponent).getParameterName();
@@ -124,7 +125,7 @@ public class FilterSupport {
 
     public void refreshConfigurationDefaultValues(Configuration configuration) {
         configuration.resetAllDefaultValues();
-        LogicalFilterComponent rootLogicalComponent = configuration.getRootLogicalFilterComponent();
+        LogicalFilterComponent<?> rootLogicalComponent = configuration.getRootLogicalFilterComponent();
         for (FilterComponent filterComponent : rootLogicalComponent.getFilterComponents()) {
             if (filterComponent instanceof SingleFilterComponentBase) {
                 configuration.setFilterComponentDefaultValue(
@@ -171,7 +172,7 @@ public class FilterSupport {
         return ImmutableSet.of(
 //                FilterEditAction.class,
 //                FilterCopyAction.class,
-//                FilterClearValuesAction.class
+                FilterClearValuesAction.class
         );
     }
 

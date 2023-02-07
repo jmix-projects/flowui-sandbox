@@ -5,7 +5,6 @@ import io.jmix.core.querycondition.LogicalCondition;
 import io.jmix.flowui.component.filer.FilterComponent;
 
 import javax.annotation.Nullable;
-import java.util.EventObject;
 
 /**
  * A configuration is a set of filter components.
@@ -41,7 +40,7 @@ public interface Configuration extends Comparable<Configuration> {
      * @return a root element of configuration
      * @see LogicalFilterComponent
      */
-    LogicalFilterComponent getRootLogicalFilterComponent();
+    LogicalFilterComponent<?> getRootLogicalFilterComponent();
 
     /**
      * Sets the root element of configuration. This method is only available for
@@ -51,7 +50,7 @@ public interface Configuration extends Comparable<Configuration> {
      * @see LogicalFilterComponent
      * @see RunTimeConfiguration
      */
-    void setRootLogicalFilterComponent(LogicalFilterComponent rootLogicalFilterComponent);
+    void setRootLogicalFilterComponent(LogicalFilterComponent<?> rootLogicalFilterComponent);
 
     /**
      * @return a {@link LogicalCondition} related to the configuration

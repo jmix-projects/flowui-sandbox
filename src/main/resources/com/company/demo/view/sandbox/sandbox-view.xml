@@ -20,5 +20,6 @@
         <dataLoadCoordinator auto="true"/>
     </facets>
     <layout>
+        <textField width="100%"/>
     </layout>
 </view>

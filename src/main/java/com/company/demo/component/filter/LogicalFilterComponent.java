@@ -16,6 +16,10 @@
 
 package com.company.demo.component.filter;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.shared.Registration;
 import io.jmix.core.metamodel.datatype.impl.EnumClass;
 import io.jmix.core.querycondition.Condition;
 import io.jmix.core.querycondition.LogicalCondition;
@@ -31,7 +35,7 @@ import java.util.Objects;
  * returned by the {@link DataLoader}. The component is related to {@link LogicalCondition} which
  * will be used together with query when loading entities into the {@link DataLoader}.
  */
-public interface LogicalFilterComponent extends FilterComponent {
+public interface LogicalFilterComponent<C extends Component & LogicalFilterComponent<C>> extends FilterComponent {
 
     /**
      * @return a {@link LogicalCondition} related to the current component
@@ -95,6 +99,8 @@ public interface LogicalFilterComponent extends FilterComponent {
      */
     void setOperationTextVisible(boolean operationTextVisible);
 
+    Registration addFilterComponentsChangeListener(ComponentEventListener<FilterComponentsChangeEvent<C>> listener);
+
     /**
      * Operation representing corresponding logical filtering condition.
      */
@@ -116,6 +122,12 @@ public interface LogicalFilterComponent extends FilterComponent {
         @Override
         public String getId() {
             return name();
+        }
+    }
+
+    class FilterComponentsChangeEvent<C extends Component & LogicalFilterComponent<C>> extends ComponentEvent<C> {
+        public FilterComponentsChangeEvent(C source, boolean fromClient) {
+            super(source, fromClient);
         }
     }
 }

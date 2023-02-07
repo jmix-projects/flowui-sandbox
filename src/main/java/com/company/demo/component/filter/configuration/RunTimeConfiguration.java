@@ -36,11 +36,11 @@ public class RunTimeConfiguration implements Configuration {
     protected final Filter owner;
 
     protected String name;
-    protected LogicalFilterComponent rootLogicalFilterComponent;
+    protected LogicalFilterComponent<?> rootLogicalFilterComponent;
     protected Set<FilterComponent> modifiedFilterComponents = new HashSet<>();
     protected Map<String, Object> defaultValuesMap = new HashMap<>();
 
-    public RunTimeConfiguration(String id, LogicalFilterComponent rootLogicalFilterComponent, Filter owner) {
+    public RunTimeConfiguration(String id, LogicalFilterComponent<?> rootLogicalFilterComponent, Filter owner) {
         this.id = id;
         this.rootLogicalFilterComponent = rootLogicalFilterComponent;
         this.owner = owner;
@@ -68,12 +68,12 @@ public class RunTimeConfiguration implements Configuration {
     }
 
     @Override
-    public LogicalFilterComponent getRootLogicalFilterComponent() {
+    public LogicalFilterComponent<?> getRootLogicalFilterComponent() {
         return rootLogicalFilterComponent;
     }
 
     @Override
-    public void setRootLogicalFilterComponent(LogicalFilterComponent rootLogicalFilterComponent) {
+    public void setRootLogicalFilterComponent(LogicalFilterComponent<?> rootLogicalFilterComponent) {
         Preconditions.checkNotNullArgument(rootLogicalFilterComponent);
         this.rootLogicalFilterComponent = rootLogicalFilterComponent;
     }
@@ -109,9 +109,10 @@ public class RunTimeConfiguration implements Configuration {
         }
 
         if (filterComponent instanceof LogicalFilterComponent) {
-            for (FilterComponent ownFilterComponent : ((LogicalFilterComponent) filterComponent).getOwnFilterComponents()) {
-                setFilterComponentModified(ownFilterComponent, modified);
-            }
+            ((LogicalFilterComponent<?>) filterComponent)
+                    .getOwnFilterComponents()
+                    .forEach(ownFilterComponent ->
+                            setFilterComponentModified(ownFilterComponent, modified));
         }
     }
 

@@ -32,14 +32,14 @@ public class DesignTimeConfiguration implements Configuration {
 
     protected final String id;
     protected final String name;
-    protected final LogicalFilterComponent rootLogicalFilterComponent;
+    protected final LogicalFilterComponent<?> rootLogicalFilterComponent;
     protected final Filter owner;
 
     protected Map<String, Object> defaultValuesMap = new HashMap<>();
 
     public DesignTimeConfiguration(String id,
                                    @Nullable String name,
-                                   LogicalFilterComponent rootLogicalFilterComponent,
+                                   LogicalFilterComponent<?> rootLogicalFilterComponent,
                                    Filter owner) {
         this.id = id;
         this.name = name;
@@ -70,12 +70,12 @@ public class DesignTimeConfiguration implements Configuration {
     }
 
     @Override
-    public LogicalFilterComponent getRootLogicalFilterComponent() {
+    public LogicalFilterComponent<?> getRootLogicalFilterComponent() {
         return rootLogicalFilterComponent;
     }
 
     @Override
-    public void setRootLogicalFilterComponent(LogicalFilterComponent rootLogicalFilterComponent) {
+    public void setRootLogicalFilterComponent(LogicalFilterComponent<?> rootLogicalFilterComponent) {
         throw new UnsupportedOperationException("You cannot set root component for design-time configuration. " +
                 "Use FilterCopyAction to create a modifiable copy of configuration");
     }

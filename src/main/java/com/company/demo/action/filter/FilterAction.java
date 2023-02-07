@@ -40,10 +40,14 @@ public abstract class FilterAction<A extends FilterAction<A>> extends SecuredBas
     @Override
     public void setTarget(@Nullable Filter target) {
         if (!Objects.equals(this.target, target)) {
-            this.target = target;
+            setTargetInternal(target);
 
             refreshState();
         }
+    }
+
+    protected void setTargetInternal(@Nullable Filter target) {
+        this.target = target;
     }
 
     @Override
@@ -145,5 +149,9 @@ public abstract class FilterAction<A extends FilterAction<A>> extends SecuredBas
         return ((A) super.withVisibleByUiPermissions(visibleByUiPermissions));
     }
 
-
+    protected void checkTarget() {
+        if (target == null) {
+            throw new IllegalStateException(String.format("%s target is not set", getClass().getSimpleName()));
+        }
+    }
 }
