@@ -18,8 +18,10 @@ package com.company.demo.entity.filter;
 
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
-import io.jmix.flowui.component.propertyfilter.FilteringOperation;
+import io.jmix.flowui.component.propertyfilter.PropertyFilter.Operation;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 @JmixEntity(name = "flowui_PropertyFilterCondition")
 @SystemLevel
@@ -27,19 +29,14 @@ public class PropertyFilterCondition extends AbstractSingleFilterCondition {
 
     private static final long serialVersionUID = 486148668136186191L;
 
-    @JmixProperty
     protected String property;
 
-    @JmixProperty
     protected String parameterName;
 
-    @JmixProperty
     protected String operation;
 
-    @JmixProperty
     protected Boolean operationEditable = true;
 
-    @JmixProperty
     protected Boolean operationTextVisible = true;
 
     public String getProperty() {
@@ -58,12 +55,12 @@ public class PropertyFilterCondition extends AbstractSingleFilterCondition {
         this.parameterName = parameterName;
     }
 
-    public FilteringOperation getOperation() {
-        return FilteringOperation.fromId(operation);
+    public Operation getOperation() {
+        return operationFromId(operation);
     }
 
-    public void setOperation(FilteringOperation operation) {
-        this.operation = operation != null ? operation.getId() : null;
+    public void setOperation(Operation operation) {
+        this.operation = operation != null ? operation.name() : null;
     }
 
     public Boolean getOperationEditable() {
@@ -80,5 +77,15 @@ public class PropertyFilterCondition extends AbstractSingleFilterCondition {
 
     public void setOperationTextVisible(Boolean operationTextVisible) {
         this.operationTextVisible = operationTextVisible;
+    }
+
+    @Nullable
+    public static Operation operationFromId(String id) {
+        for (Operation operation : Operation.values()) {
+            if (Objects.equals(id, operation.name())) {
+                return operation;
+            }
+        }
+        return null;
     }
 }

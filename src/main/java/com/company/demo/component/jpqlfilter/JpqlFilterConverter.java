@@ -85,7 +85,6 @@ public class JpqlFilterConverter extends AbstractFilterComponentConverter<JpqlFi
     public JpqlFilter convertToComponent(JpqlFilterCondition model) {
         JpqlFilter jpqlFilter = super.convertToComponent(model);
         jpqlFilter.setLabel(model.getLabel());
-        jpqlFilter.setLabelPosition(model.getLabelPosition());
         jpqlFilter.setRequired(model.getRequired());
         jpqlFilter.setParameterName(model.getParameterName());
         if (model.getParameterClass() != null) {
@@ -107,7 +106,6 @@ public class JpqlFilterConverter extends AbstractFilterComponentConverter<JpqlFi
         JpqlFilterCondition condition = super.convertToModel(jpqlFilter);
         condition.setLabel(jpqlFilter.getLabel());
         condition.setLocalizedLabel(getLocalizedModelLabel(jpqlFilter));
-        condition.setLabelPosition(jpqlFilter.getLabelPosition());
         condition.setRequired(jpqlFilter.isRequired());
         condition.setParameterName(jpqlFilter.getParameterName());
         condition.setParameterClass(jpqlFilter.getParameterClass().getName());

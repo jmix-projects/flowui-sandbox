@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 
 import java.io.Serializable;
 
@@ -33,26 +32,19 @@ public abstract class FilterCondition implements Serializable {
 
     private static final long serialVersionUID = -2993349561173596671L;
 
-    @JmixProperty
     protected String componentId;
 
-    @JmixProperty
     protected Boolean visible = true;
 
-    @JmixProperty
     protected Boolean enabled = true;
 
-    @JmixProperty
     protected String label;
 
-    @JmixProperty
     @InstanceName
     protected String localizedLabel;
 
-    @JmixProperty
     protected String styleName;
 
-    @JmixProperty
     protected FilterCondition parent;
 
     public String getComponentId() {

@@ -19,23 +19,18 @@ package com.company.demo.entity.filter;
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 
 @JmixEntity(name = "flowui_FilterValueComponent")
 @SystemLevel
 public class FilterValueComponent {
 
     @InstanceName
-    @JmixProperty
     protected String componentName;
 
-    @JmixProperty
     protected String componentId;
 
-    @JmixProperty
     protected String styleName;
 
-    @JmixProperty
     protected String defaultValue;
 
     public String getComponentName() {

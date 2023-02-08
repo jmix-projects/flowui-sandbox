@@ -1,8 +1,9 @@
 package com.company.demo.component.groupfilter;
 
+import com.company.demo.component.SupportsResponsiveSteps;
+import com.company.demo.component.WrapperUtils;
 import com.company.demo.component.filter.LogicalFilterComponent;
 import com.google.common.base.Strings;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -14,9 +15,9 @@ import io.jmix.core.querycondition.Condition;
 import io.jmix.core.querycondition.LogicalCondition;
 import io.jmix.flowui.FlowuiComponentProperties;
 import io.jmix.flowui.UiComponents;
-import io.jmix.flowui.component.SupportsLabelPosition;
 import io.jmix.flowui.component.filer.FilterComponent;
 import io.jmix.flowui.component.filer.SingleFilterComponent;
+import io.jmix.flowui.component.filer.SingleFilterComponentBase;
 import io.jmix.flowui.component.propertyfilter.PropertyFilter;
 import io.jmix.flowui.kit.component.FlowuiComponentUtils;
 import io.jmix.flowui.model.DataLoader;
@@ -26,17 +27,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 @SuppressWarnings("JmixInternalElementUsage")
 public class GroupFilter extends Composite<VerticalLayout>
-        implements LogicalFilterComponent<GroupFilter>, SupportsLabelPosition,
+        implements LogicalFilterComponent<GroupFilter>, SupportsResponsiveSteps,
         ApplicationContextAware, InitializingBean {
 
     protected static final String GROUP_FILTER_CLASS_NAME = "jmix-group-filter";
@@ -52,8 +50,7 @@ public class GroupFilter extends Composite<VerticalLayout>
     @Internal
     protected boolean conditionModificationDelegated = false;
 
-    //    protected int columnsCount;
-    protected LabelPosition labelPosition = LabelPosition.ASIDE;
+    protected List<ResponsiveStep> responsiveSteps;
     protected Label summaryComponent;
     protected String summaryText;
     protected boolean operationTextVisible = true;
@@ -64,6 +61,7 @@ public class GroupFilter extends Composite<VerticalLayout>
     protected List<FilterComponent> ownFilterComponentsOrder;
 
     protected FormLayout conditionsLayout;
+    protected Map<FilterComponent, FormLayout.FormItem> filterComponentFormItemMap;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -95,6 +93,12 @@ public class GroupFilter extends Composite<VerticalLayout>
     protected void initComponent() {
         this.autoApply = applicationContext.getBean(FlowuiComponentProperties.class).isFilterAutoApply();
 
+        responsiveSteps = List.of(
+                new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
+                new ResponsiveStep("40em", 2),
+                new ResponsiveStep("75em", 3)
+        );
+
         initLayout();
     }
 
@@ -107,13 +111,7 @@ public class GroupFilter extends Composite<VerticalLayout>
     }
 
     protected void initConditionsLayout(FormLayout layout) {
-        layout.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("50em", 2),
-                new FormLayout.ResponsiveStep("75em", 3)
-        );
-
-        // TODO: gg, something else?
+        layout.setResponsiveSteps(WrapperUtils.convertToFormLayoutResponsiveStep(responsiveSteps));
     }
 
     protected boolean isAnyFilterComponentVisible() {
@@ -123,14 +121,27 @@ public class GroupFilter extends Composite<VerticalLayout>
 
     protected void addFilterComponentToConditionsLayout(FormLayout conditionsLayout,
                                                         FilterComponent filterComponent) {
-        // TODO: gg, add considering label position
-        if (filterComponent instanceof SupportsLabelPosition) {
-            ((SupportsLabelPosition) filterComponent).setLabelPosition(getLabelPosition());
-        }
+        if (filterComponent instanceof SingleFilterComponentBase) {
+            SingleFilterComponentBase<?> singleFilterComponent = ((SingleFilterComponentBase<?>) filterComponent);
 
-        conditionsLayout.add(((Component) filterComponent));
+            Label label = new Label(singleFilterComponent.getLabel());
+            singleFilterComponent.setWidthFull();
+            FormLayout.FormItem formItem = conditionsLayout.addFormItem(singleFilterComponent, label);
+
+            registerFilterComponentFormItem(filterComponent, formItem);
+
+            singleFilterComponent.setLabelDelegate(label::setText);
+        } else {
+            // TODO: gg, support for LogicalFilterComponent
+        }
     }
 
+    private void registerFilterComponentFormItem(FilterComponent filterComponent, FormLayout.FormItem formItem) {
+        if (filterComponentFormItemMap == null) {
+            filterComponentFormItemMap = new HashMap<>();
+        }
+        filterComponentFormItemMap.put(filterComponent, formItem);
+    }
 
     @Override
     public DataLoader getDataLoader() {
@@ -247,8 +258,7 @@ public class GroupFilter extends Composite<VerticalLayout>
             updateDataLoaderCondition();
         }
 
-        FilterComponentsChangeEvent<GroupFilter> event = new FilterComponentsChangeEvent<>(this, false);
-        getEventBus().fireEvent(event);
+        fireFilterComponentsChanged();
     }
 
     protected void updateConditionsLayout() {
@@ -276,7 +286,10 @@ public class GroupFilter extends Composite<VerticalLayout>
                 getDataLoader().removeParameter(((SingleFilterComponent<?>) filterComponent).getParameterName());
             }
 
-            conditionsLayout.remove(((Component) filterComponent));
+            FormLayout.FormItem formItem = filterComponentFormItemMap.remove(filterComponent);
+            if (formItem != null) {
+                conditionsLayout.remove(formItem);
+            }
             updateConditionsLayout();
 
             if (!isConditionModificationDelegated()) {
@@ -289,8 +302,7 @@ public class GroupFilter extends Composite<VerticalLayout>
                     .forEach(childLogicalFilterComponent -> childLogicalFilterComponent.remove(filterComponent));
         }
 
-        FilterComponentsChangeEvent<GroupFilter> event = new FilterComponentsChangeEvent<>(this, false);
-        getEventBus().fireEvent(event);
+        fireFilterComponentsChanged();
     }
 
     @Override
@@ -302,8 +314,7 @@ public class GroupFilter extends Composite<VerticalLayout>
             updateDataLoaderCondition();
         }
 
-        FilterComponentsChangeEvent<GroupFilter> event = new FilterComponentsChangeEvent<>(this, false);
-        getEventBus().fireEvent(event);
+        fireFilterComponentsChanged();
     }
 
     @Nullable
@@ -379,24 +390,17 @@ public class GroupFilter extends Composite<VerticalLayout>
     }
 
     @Override
-    public LabelPosition getLabelPosition() {
-        return labelPosition;
+    public List<ResponsiveStep> getResponsiveSteps() {
+        return Collections.unmodifiableList(responsiveSteps);
     }
 
     @Override
-    public void setLabelPosition(LabelPosition labelPosition) {
-        if (this.labelPosition != labelPosition) {
-            this.labelPosition = labelPosition;
+    public void setResponsiveSteps(List<ResponsiveStep> steps) {
+        this.responsiveSteps = steps;
 
-            updateConditionsLabelPosition(labelPosition);
+        if (conditionsLayout != null) {
+            conditionsLayout.setResponsiveSteps(WrapperUtils.convertToFormLayoutResponsiveStep(responsiveSteps));
         }
-    }
-
-    protected void updateConditionsLabelPosition(LabelPosition labelPosition) {
-        getOwnFilterComponents().stream()
-                .filter(filterComponent -> filterComponent instanceof SupportsLabelPosition)
-                .map(filterComponent -> ((SupportsLabelPosition) filterComponent))
-                .forEach(supportsLabelPosition -> supportsLabelPosition.setLabelPosition(labelPosition));
     }
 
     @Override
@@ -437,5 +441,10 @@ public class GroupFilter extends Composite<VerticalLayout>
     public Registration addFilterComponentsChangeListener(
             ComponentEventListener<FilterComponentsChangeEvent<GroupFilter>> listener) {
         return getEventBus().addListener(FilterComponentsChangeEvent.class, ((ComponentEventListener) listener));
+    }
+
+    protected void fireFilterComponentsChanged() {
+        FilterComponentsChangeEvent<GroupFilter> event = new FilterComponentsChangeEvent<>(this, false);
+        getEventBus().fireEvent(event);
     }
 }

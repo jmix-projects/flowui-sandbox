@@ -31,8 +31,6 @@ import io.jmix.core.Metadata;
 import io.jmix.core.metamodel.model.MetaClass;
 import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.core.querycondition.PropertyConditionUtils;
-import io.jmix.flowui.component.SupportsLabelPosition;
-import io.jmix.flowui.component.propertyfilter.FilteringOperation;
 import io.jmix.flowui.component.propertyfilter.PropertyFilter;
 import io.jmix.flowui.component.propertyfilter.PropertyFilterSupport;
 import io.jmix.flowui.component.propertyfilter.SingleFilterSupport;
@@ -121,15 +119,13 @@ public class PropertyConditionBuilder extends AbstractConditionBuilder {
             ((PropertyFilterCondition) filterCondition).setProperty(property);
             ((PropertyFilterCondition) filterCondition).setParameterName(
                     PropertyConditionUtils.generateParameterName(property));
-            ((PropertyFilterCondition) filterCondition)
-                    .setLabelPosition(SupportsLabelPosition.LabelPosition.ASIDE);
             String localizedCaption = messageTools.getPropertyCaption(metaClass, property);
             filterCondition.setLocalizedLabel(localizedCaption);
 
             String propertyFilterPrefix = propertyFilterSupport.getPropertyFilterPrefix(Optional.empty(), property);
             filterCondition.setComponentId(propertyFilterPrefix.substring(0, propertyFilterPrefix.length() - 1));
 
-            FilteringOperation operation = propertyFilterSupport.getDefaultOperation(metaClass, property);
+            PropertyFilter.Operation operation = propertyFilterSupport.getDefaultOperation(metaClass, property);
             ((PropertyFilterCondition) filterCondition).setOperation(operation);
 
             FilterValueComponent modelValueComponent = metadata.create(FilterValueComponent.class);

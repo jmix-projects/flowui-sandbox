@@ -18,7 +18,6 @@ package com.company.demo.entity.filter;
 
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 
 @JmixEntity(name = "flowui_JpqlFilterCondition")
 @SystemLevel
@@ -26,19 +25,14 @@ public class JpqlFilterCondition extends AbstractSingleFilterCondition {
 
     private static final long serialVersionUID = 6530536119809636937L;
 
-    @JmixProperty
     protected String parameterName;
 
-    @JmixProperty
     protected String parameterClass;
 
-    @JmixProperty
     protected String where;
 
-    @JmixProperty
     protected String join;
 
-    @JmixProperty
     protected Boolean hasInExpression = false;
 
     public String getParameterName() {

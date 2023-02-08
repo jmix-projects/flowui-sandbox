@@ -20,7 +20,6 @@ import com.company.demo.component.filter.LogicalFilterComponent.Operation;
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -33,18 +32,15 @@ public abstract class LogicalFilterCondition extends FilterCondition {
 
     private static final long serialVersionUID = 5915361115976376590L;
 
-    @JmixProperty
     @InstanceName
     protected String operation;
 
-    @JmixProperty
     protected Boolean operationTextVisible = true;
 
-    @JmixProperty
     protected List<FilterCondition> ownFilterConditions = new ArrayList<>();
 
     public Operation getOperation() {
-        return fromId(operation);
+        return operationFromId(operation);
     }
 
     public void setOperation(Operation operation) {
@@ -68,7 +64,7 @@ public abstract class LogicalFilterCondition extends FilterCondition {
     }
 
     @Nullable
-    public static Operation fromId(String id) {
+    public static Operation operationFromId(String id) {
         for (Operation operation : Operation.values()) {
             if (Objects.equals(id, operation.name())) {
                 return operation;

@@ -87,7 +87,6 @@ public class PropertyFilterConverter
     public PropertyFilter convertToComponent(PropertyFilterCondition model) {
         PropertyFilter propertyFilter = super.convertToComponent(model);
         propertyFilter.setLabel(model.getLabel());
-        propertyFilter.setLabelPosition(model.getLabelPosition());
         propertyFilter.setRequired(model.getRequired());
         propertyFilter.setProperty(model.getProperty());
         propertyFilter.setOperation(model.getOperation());
@@ -108,7 +107,6 @@ public class PropertyFilterConverter
         PropertyFilterCondition condition = super.convertToModel(propertyFilter);
         condition.setLabel(propertyFilter.getLabel());
         condition.setLocalizedLabel(getLocalizedModelLabel(propertyFilter));
-        condition.setLabelPosition(propertyFilter.getLabelPosition());
         condition.setRequired(propertyFilter.isRequired());
         condition.setProperty(propertyFilter.getProperty());
         condition.setOperation(propertyFilter.getOperation());
