@@ -16,14 +16,16 @@
 
 package com.company.demo.entity.filter;
 
-import com.company.demo.component.filter.LogicalFilterComponent;
+import com.company.demo.component.filter.LogicalFilterComponent.Operation;
 import io.jmix.core.entity.annotation.SystemLevel;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.annotation.JmixProperty;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @JmixEntity(name = "flowui_LogicalFilterCondition")
 @SystemLevel
@@ -41,12 +43,12 @@ public abstract class LogicalFilterCondition extends FilterCondition {
     @JmixProperty
     protected List<FilterCondition> ownFilterConditions = new ArrayList<>();
 
-    public LogicalFilterComponent.Operation getOperation() {
-        return LogicalFilterComponent.Operation.fromId(operation);
+    public Operation getOperation() {
+        return fromId(operation);
     }
 
-    public void setOperation(LogicalFilterComponent.Operation operation) {
-        this.operation = operation != null ? operation.getId() : null;
+    public void setOperation(Operation operation) {
+        this.operation = operation != null ? operation.name() : null;
     }
 
     public Boolean getOperationTextVisible() {
@@ -63,5 +65,15 @@ public abstract class LogicalFilterCondition extends FilterCondition {
 
     public void setOwnFilterConditions(List<FilterCondition> ownFilterConditions) {
         this.ownFilterConditions = ownFilterConditions;
+    }
+
+    @Nullable
+    public static Operation fromId(String id) {
+        for (Operation operation : Operation.values()) {
+            if (Objects.equals(id, operation.name())) {
+                return operation;
+            }
+        }
+        return null;
     }
 }

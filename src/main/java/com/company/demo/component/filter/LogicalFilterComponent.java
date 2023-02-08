@@ -20,15 +20,12 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.shared.Registration;
-import io.jmix.core.metamodel.datatype.impl.EnumClass;
 import io.jmix.core.querycondition.Condition;
 import io.jmix.core.querycondition.LogicalCondition;
 import io.jmix.flowui.component.filer.FilterComponent;
 import io.jmix.flowui.model.DataLoader;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Component which can contain other filter components and can be used for filtering entities
@@ -104,25 +101,9 @@ public interface LogicalFilterComponent<C extends Component & LogicalFilterCompo
     /**
      * Operation representing corresponding logical filtering condition.
      */
-    // TODO: gg, do not use EnumClass
-    enum Operation implements EnumClass<String> {
+    enum Operation {
         AND,
-        OR;
-
-        @Nullable
-        public static Operation fromId(String id) {
-            for (Operation operation : Operation.values()) {
-                if (Objects.equals(id, operation.getId())) {
-                    return operation;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public String getId() {
-            return name();
-        }
+        OR
     }
 
     class FilterComponentsChangeEvent<C extends Component & LogicalFilterComponent<C>> extends ComponentEvent<C> {

@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,7 +61,7 @@ public class GroupFilter extends Composite<VerticalLayout>
     protected Operation operation = Operation.AND;
     protected LogicalCondition queryCondition = LogicalCondition.and();
 
-    protected List<FilterComponent> ownFilterComponentsOrder = new ArrayList<>();
+    protected List<FilterComponent> ownFilterComponentsOrder;
 
     protected FormLayout conditionsLayout;
 
@@ -115,33 +116,9 @@ public class GroupFilter extends Composite<VerticalLayout>
         // TODO: gg, something else?
     }
 
-    protected void updateConditionsLayout() {
-        if (conditionsLayout != null) {
-            conditionsLayout.removeAll();
-            getContent().remove(conditionsLayout);
-            conditionsLayout = null;
-        }
-
-        boolean isAnyFilterComponentVisible = getOwnFilterComponents().stream()
+    protected boolean isAnyFilterComponentVisible() {
+        return getOwnFilterComponents().stream()
                 .anyMatch(FlowuiComponentUtils::isVisible);
-
-        if (isAnyFilterComponentVisible) {
-            conditionsLayout = createConditionsLayout();
-            initConditionsLayout(conditionsLayout);
-            getContent().add(conditionsLayout);
-
-            getOwnFilterComponents().stream()
-                    .filter(FlowuiComponentUtils::isVisible)
-                    .forEach(ownFilterComponent -> {
-                        // TODO: gg, implement
-                        /*if (ownFilterComponent instanceof LogicalFilterComponent) {
-                            addLogicalFilterComponentToConditionsLayoutRow(
-                                    (LogicalFilterComponent) ownFilterComponent, row);
-                        } else {*/
-                        addFilterComponentToConditionsLayout(conditionsLayout, ownFilterComponent);
-//                        }
-                    });
-        }
     }
 
     protected void addFilterComponentToConditionsLayout(FormLayout conditionsLayout,
@@ -150,10 +127,6 @@ public class GroupFilter extends Composite<VerticalLayout>
         if (filterComponent instanceof SupportsLabelPosition) {
             ((SupportsLabelPosition) filterComponent).setLabelPosition(getLabelPosition());
         }
-
-        /*if (filterComponent instanceof HasSize) {
-            ((HasSize) filterComponent).setWidthFull();
-        }*/
 
         conditionsLayout.add(((Component) filterComponent));
     }
@@ -230,7 +203,7 @@ public class GroupFilter extends Composite<VerticalLayout>
     protected void updateQueryCondition() {
         queryCondition = new LogicalCondition(toLogicalConditionType(operation));
 
-        for (FilterComponent ownComponent : ownFilterComponentsOrder) {
+        for (FilterComponent ownComponent : getOwnFilterComponents()) {
             queryCondition.add(ownComponent.getQueryCondition());
         }
     }
@@ -257,8 +230,14 @@ public class GroupFilter extends Composite<VerticalLayout>
         filterComponent.setConditionModificationDelegated(true);
         filterComponent.setAutoApply(isAutoApply());
         getQueryCondition().add(filterComponent.getQueryCondition());
+
+        if (ownFilterComponentsOrder == null) {
+            ownFilterComponentsOrder = new ArrayList<>();
+        }
         ownFilterComponentsOrder.add(filterComponent);
+
         updateConditionsLayout();
+        addFilterComponentToConditionsLayout(conditionsLayout, filterComponent);
 
         if (filterComponent instanceof PropertyFilter) {
             ((PropertyFilter<?>) filterComponent).addOperationChangeListener(operationChangeEvent -> apply());
@@ -272,22 +251,39 @@ public class GroupFilter extends Composite<VerticalLayout>
         getEventBus().fireEvent(event);
     }
 
+    protected void updateConditionsLayout() {
+        if (conditionsLayout == null && isAnyFilterComponentVisible()) {
+            conditionsLayout = createConditionsLayout();
+            initConditionsLayout(conditionsLayout);
+            getContent().add(conditionsLayout);
+        } else if (conditionsLayout != null && !isAnyFilterComponentVisible()) {
+            conditionsLayout.removeAll();
+            getContent().remove(conditionsLayout);
+            conditionsLayout = null;
+        }
+    }
+
     @Override
     public void remove(FilterComponent filterComponent) {
-        if (ownFilterComponentsOrder.contains(filterComponent)) {
+        if (getOwnFilterComponents().contains(filterComponent)) {
             ownFilterComponentsOrder.remove(filterComponent);
+
+            if (ownFilterComponentsOrder.isEmpty()) {
+                ownFilterComponentsOrder = null;
+            }
 
             if (filterComponent instanceof SingleFilterComponent) {
                 getDataLoader().removeParameter(((SingleFilterComponent<?>) filterComponent).getParameterName());
             }
 
+            conditionsLayout.remove(((Component) filterComponent));
             updateConditionsLayout();
 
             if (!isConditionModificationDelegated()) {
                 updateDataLoaderCondition();
             }
         } else {
-            ownFilterComponentsOrder.stream()
+            getOwnFilterComponents().stream()
                     .filter(ownComponent -> ownComponent instanceof LogicalFilterComponent)
                     .map(ownComponent -> (LogicalFilterComponent<?>) ownComponent)
                     .forEach(childLogicalFilterComponent -> childLogicalFilterComponent.remove(filterComponent));
@@ -299,10 +295,7 @@ public class GroupFilter extends Composite<VerticalLayout>
 
     @Override
     public void removeAll() {
-        // TODO: gg, replace
-//        getComposition().removeAll();
-        ownFilterComponentsOrder = new ArrayList<>();
-
+        ownFilterComponentsOrder = null;
         updateConditionsLayout();
 
         if (!isConditionModificationDelegated()) {
@@ -395,19 +388,28 @@ public class GroupFilter extends Composite<VerticalLayout>
         if (this.labelPosition != labelPosition) {
             this.labelPosition = labelPosition;
 
-            updateConditionsLayout();
+            updateConditionsLabelPosition(labelPosition);
         }
+    }
+
+    protected void updateConditionsLabelPosition(LabelPosition labelPosition) {
+        getOwnFilterComponents().stream()
+                .filter(filterComponent -> filterComponent instanceof SupportsLabelPosition)
+                .map(filterComponent -> ((SupportsLabelPosition) filterComponent))
+                .forEach(supportsLabelPosition -> supportsLabelPosition.setLabelPosition(labelPosition));
     }
 
     @Override
     public List<FilterComponent> getOwnFilterComponents() {
-        return ownFilterComponentsOrder;
+        return ownFilterComponentsOrder != null
+                ? Collections.unmodifiableList(ownFilterComponentsOrder)
+                : Collections.emptyList();
     }
 
     @Override
     public List<FilterComponent> getFilterComponents() {
         List<FilterComponent> components = new ArrayList<>();
-        for (FilterComponent ownComponent : ownFilterComponentsOrder) {
+        for (FilterComponent ownComponent : getOwnFilterComponents()) {
             components.add(ownComponent);
             if (ownComponent instanceof LogicalFilterComponent) {
                 components.addAll(((LogicalFilterComponent<?>) ownComponent).getFilterComponents());
