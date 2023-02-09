@@ -66,7 +66,6 @@ public class OrderListView extends StandardListView<Order> {
         Filter filter = uiComponents.create(Filter.class);
         filter.setId("filter");
         filter.setDataLoader(ordersDl);
-        filter.loadConfigurationsAndApplyDefault();
 
         getContent().addComponentAsFirst(filter);
 

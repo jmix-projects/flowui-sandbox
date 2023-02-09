@@ -443,19 +443,6 @@ public class Filter extends Composite<JmixDetails> implements SupportsResponsive
         }
     }
 
-    // TODO: gg, public? try to remove
-    public void loadConfigurationsAndApplyDefault() {
-        Map<Configuration, Boolean> configurationsMap = filterSupport.getConfigurationsMap(this);
-        boolean defaultForAllConfigurationApplied = false;
-        for (Map.Entry<Configuration, Boolean> entry : configurationsMap.entrySet()) {
-            addConfiguration(entry.getKey());
-            if (!defaultForAllConfigurationApplied && entry.getValue()) {
-                setCurrentConfigurationInternal(entry.getKey(), false);
-                defaultForAllConfigurationApplied = true;
-            }
-        }
-    }
-
     protected void refreshCurrentConfigurationLayout() {
         if (rootLogicalFilterComponent != null) {
             contentWrapper.remove(((Component) rootLogicalFilterComponent));
