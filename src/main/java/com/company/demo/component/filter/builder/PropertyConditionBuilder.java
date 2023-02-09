@@ -71,7 +71,7 @@ public class PropertyConditionBuilder extends AbstractConditionBuilder {
     public List<FilterCondition> build(Filter filter) {
         MetaClass filterMetaClass = filter.getDataLoader().getContainer().getEntityMetaClass();
         String query = filter.getDataLoader().getQuery();
-        Predicate<MetaPropertyPath> propertiesFilterPredicate = filter.getPropertiesFilterPredicate();
+        Predicate<MetaPropertyPath> propertiesFilterPredicate = filter.getPropertyFiltersPredicate();
 
         List<MetaPropertyPath> paths = filterMetadataTools.getPropertyPaths(filterMetaClass, query,
                 propertiesFilterPredicate);

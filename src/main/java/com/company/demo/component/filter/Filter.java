@@ -3,6 +3,8 @@ package com.company.demo.component.filter;
 import com.company.demo.accesscontext.FlowuiFilterModifyConfigurationContext;
 import com.company.demo.action.filter.FilterAction;
 import com.company.demo.action.filter.FilterAddConditionAction;
+import com.company.demo.action.filter.FilterResetAction;
+import com.company.demo.component.SupportsResponsiveSteps;
 import com.company.demo.component.filter.configuration.DesignTimeConfiguration;
 import com.company.demo.component.filter.configuration.RunTimeConfiguration;
 import com.company.demo.component.groupfilter.GroupFilter;
@@ -25,7 +27,6 @@ import io.jmix.flowui.Actions;
 import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.FlowuiComponentProperties;
 import io.jmix.flowui.UiComponents;
-import io.jmix.flowui.component.SupportsLabelPosition;
 import io.jmix.flowui.component.UiComponentUtils;
 import io.jmix.flowui.component.details.JmixDetails;
 import io.jmix.flowui.component.filer.FilterComponent;
@@ -34,13 +35,10 @@ import io.jmix.flowui.component.filer.SingleFilterComponentBase;
 import io.jmix.flowui.component.propertyfilter.PropertyFilter;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.BaseAction;
-import io.jmix.flowui.kit.component.HasActions;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.kit.component.combobutton.ComboButton;
 import io.jmix.flowui.kit.component.combobutton.ComboButtonVariant;
-import io.jmix.flowui.kit.component.dropdownbutton.ActionItem;
 import io.jmix.flowui.kit.component.dropdownbutton.DropdownButton;
-import io.jmix.flowui.kit.component.dropdownbutton.DropdownButtonItem;
 import io.jmix.flowui.kit.component.dropdownbutton.DropdownButtonVariant;
 import io.jmix.flowui.model.BaseCollectionLoader;
 import io.jmix.flowui.model.DataLoader;
@@ -52,15 +50,19 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public class Filter extends Composite<JmixDetails> implements SupportsLabelPosition, HasActions,
+@SuppressWarnings({"JmixInternalElementUsage", "unused"})
+public class Filter extends Composite<JmixDetails> implements SupportsResponsiveSteps,
         ApplicationContextAware, InitializingBean {
 
+    protected static final String CONDITION_REMOVE_BUTTON_ID_SUFFIX = "conditionRemoveButton";
+
     protected static final String FILTER_CLASS_NAME = "jmix-filter";
+    protected static final String FILTER_CONTENT_WRAPPER_CLASS_NAME = "jmix-filter-content-wrapper";
+    protected static final String FILTER_CONTROLS_LAYOUT_CLASS_NAME = "jmix-filter-controls-layout";
 
     protected ApplicationContext applicationContext;
     protected CurrentAuthentication currentAuthentication;
@@ -71,26 +73,25 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     protected DialogWindows dialogWindows;
     protected FilterSupport filterSupport;
 
+    protected boolean autoApply;
     protected DataLoader dataLoader;
     protected Condition initialDataLoaderCondition;
-    protected boolean autoApply;
-    protected LabelPosition labelPosition = LabelPosition.ASIDE;
-    protected Predicate<MetaPropertyPath> propertiesFilterPredicate; // TODO: gg, rename to propertyFiltersPredicate?
-
-    protected LogicalFilterComponent<?> rootLogicalFilterComponent;
+    protected Predicate<MetaPropertyPath> propertyFiltersPredicate;
 
     protected VerticalLayout contentWrapper;
     protected HorizontalLayout controlsLayout;
-    protected ComboButton searchButton;
+    protected ComboButton applyButton;
     protected JmixButton addConditionButton;
     protected DropdownButton settingsButton;
+    protected List<ResponsiveStep> responsiveSteps;
     protected Registration openedChangeRegistration;
 
+    protected LogicalFilterComponent<?> rootLogicalFilterComponent;
     protected Configuration emptyConfiguration;
     protected Configuration currentConfiguration;
     protected List<Configuration> configurations = new ArrayList<>();
 
-    protected List<FilterComponent> conditions = new ArrayList<>(); // TODO: gg, lazy
+    protected List<FilterComponent> conditions;
 
     protected boolean configurationModifyPermitted;
 
@@ -117,11 +118,47 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
     protected void initComponent() {
         this.autoApply = applicationContext.getBean(FlowuiComponentProperties.class).isFilterAutoApply();
-        // TODO: gg, implement
-//        this.columnsCount = componentProperties.getFilterColumnsCount();
 
+        initDefaultResponsiveSteps();
         initEmptyConfiguration();
         initLayout();
+    }
+
+    protected void initDefaultResponsiveSteps() {
+        responsiveSteps = List.of(
+                new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
+                new ResponsiveStep("40em", 2),
+                new ResponsiveStep("75em", 3)
+        );
+    }
+
+    protected void initEmptyConfiguration() {
+        LogicalFilterComponent<?> configurationLogicalComponent =
+                createConfigurationRootLogicalFilterComponent(LogicalFilterComponent.Operation.AND);
+        emptyConfiguration =
+                new RunTimeConfiguration("empty_configuration", configurationLogicalComponent, this);
+
+        String emptyConfigurationName = StringUtils.isNotEmpty(getSummaryText())
+                ? getSummaryText()
+                : messages.getMessage("filter.emptyConfiguration.name");
+        emptyConfiguration.setName(emptyConfigurationName);
+
+        setCurrentConfigurationInternal(emptyConfiguration, false);
+    }
+
+    protected LogicalFilterComponent<?> createConfigurationRootLogicalFilterComponent(
+            LogicalFilterComponent.Operation rootOperation) {
+        GroupFilter rootGroupFilter = uiComponents.create(GroupFilter.class);
+        rootGroupFilter.setConditionModificationDelegated(true);
+        rootGroupFilter.setOperation(rootOperation);
+        rootGroupFilter.setOperationTextVisible(false);
+
+        if (dataLoader != null) {
+            rootGroupFilter.setDataLoader(dataLoader);
+            rootGroupFilter.setAutoApply(autoApply);
+        }
+
+        return rootGroupFilter;
     }
 
     @Override
@@ -140,7 +177,6 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         initContentWrapper(contentWrapper);
         getContent().setContent(contentWrapper);
 
-        // TODO: gg, extract
         controlsLayout = createControlsLayout();
         initControlsLayout(controlsLayout);
         contentWrapper.add(controlsLayout);
@@ -152,9 +188,8 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
     protected void initContentWrapper(VerticalLayout contentWrapper) {
         contentWrapper.setPadding(false);
-        // TODO: gg, something else?
+        contentWrapper.setClassName(FILTER_CONTENT_WRAPPER_CLASS_NAME);
     }
-
 
     protected HorizontalLayout createControlsLayout() {
         return uiComponents.create(HorizontalLayout.class);
@@ -162,10 +197,11 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
     protected void initControlsLayout(HorizontalLayout controlsLayout) {
         controlsLayout.setWidthFull();
+        controlsLayout.setClassName(FILTER_CONTROLS_LAYOUT_CLASS_NAME);
 
-        searchButton = createSearchButton();
-        initSearchButton(searchButton);
-        controlsLayout.add(searchButton);
+        applyButton = createApplyButton();
+        initApplyButton(applyButton);
+        controlsLayout.add(applyButton);
 
         addConditionButton = createAddConditionButton();
         initAddConditionButton(addConditionButton);
@@ -184,51 +220,44 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         addConditionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         FilterAddConditionAction addConditionAction = actions.create(FilterAddConditionAction.class);
-        addConditionAction.setTarget(this); // TODO: gg, set automatically
+        addConditionAction.setTarget(this);
         addConditionAction.setText(messages.getMessage("filter.addConditionButton.text"));
         addConditionAction.setIcon(null);
         addConditionButton.setAction(addConditionAction, false);
     }
 
-    protected ComboButton createSearchButton() {
+    protected ComboButton createApplyButton() {
         return uiComponents.create(ComboButton.class);
     }
 
-    protected void initSearchButton(ComboButton searchButton) {
-        searchButton.addClickListener(this::onSearchButtonClick);
-        searchButton.addThemeVariants(ComboButtonVariant.LUMO_SUCCESS, ComboButtonVariant.LUMO_PRIMARY);
-        updateSearchButtonText(isAutoApply());
+    protected void initApplyButton(ComboButton applyButton) {
+        applyButton.addClickListener(this::onApplyButtonClick);
+        applyButton.addThemeVariants(ComboButtonVariant.LUMO_SUCCESS, ComboButtonVariant.LUMO_PRIMARY);
+        updateApplyButtonText(isAutoApply());
 
         initSelectConfigurationDropdown();
     }
 
     protected void initSelectConfigurationDropdown() {
         Action resetFilterAction = createResetFilterAction();
-        searchButton.addItem(resetFilterAction.getId(), resetFilterAction);
+        applyButton.addItem(resetFilterAction.getId(), resetFilterAction);
     }
 
-    protected void updateSearchButtonText(boolean autoApply) {
+    protected void updateApplyButtonText(boolean autoApply) {
         String text = autoApply
-                ? messages.getMessage("filter.searchButton.autoApply")
-                : messages.getMessage("filter.searchButton");
-        searchButton.setText(text);
+                ? messages.getMessage("filter.applyButton.autoApply")
+                : messages.getMessage("filter.applyButton");
+        applyButton.setText(text);
     }
 
-    protected void onSearchButtonClick(ClickEvent<MenuItem> clickEvent) {
+    protected void onApplyButtonClick(ClickEvent<MenuItem> clickEvent) {
         getDataLoader().load();
     }
 
-    // TODO: gg, extract
     protected Action createResetFilterAction() {
-        return new BaseAction("filter_reset")
-                .withText(messages.getMessage("actions.Filter.Reset"))
-                .withHandler(actionPerformedEvent -> {
-                    Configuration configuration = getEmptyConfiguration();
-                    configuration.getRootLogicalFilterComponent().removeAll();
-                    configuration.setModified(false);
-                    setCurrentConfiguration(configuration);
-                    apply();
-                });
+        FilterResetAction filterResetAction = actions.create(FilterResetAction.class);
+        filterResetAction.setTarget(this);
+        return filterResetAction;
     }
 
     protected DropdownButton createSettingsButton() {
@@ -239,26 +268,20 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         settingsButton.addThemeVariants(DropdownButtonVariant.LUMO_ICON);
         settingsButton.setDropdownIndicatorVisible(false);
         settingsButton.setIcon(VaadinIcon.COG.create());
-        // TODO: gg, do something better
         settingsButton.getElement().getStyle().set("margin-inline-start", "auto");
 
-        // TODO: gg, extract
-        if (getActions().isEmpty()) {
-            List<FilterAction<?>> defaultFilterActions = filterSupport.getDefaultFilterActions(this);
-            for (FilterAction<?> filterAction : defaultFilterActions) {
-                addAction(filterAction);
-            }
+        List<FilterAction<?>> defaultFilterActions = filterSupport.getDefaultFilterActions(this);
+        for (FilterAction<?> filterAction : defaultFilterActions) {
+            settingsButton.addItem(filterAction.getId(), filterAction);
         }
 
-        // TODO: gg, extract?
         FlowuiFilterModifyConfigurationContext context = new FlowuiFilterModifyConfigurationContext();
         applicationContext.getBean(AccessManager.class).applyRegisteredConstraints(context);
         configurationModifyPermitted = context.isPermitted();
         settingsButton.setVisible(configurationModifyPermitted);
     }
 
-    // TODO: gg,
-    public HorizontalLayout getControlsLayout() {
+    public HasComponents getControlsLayout() {
         return controlsLayout;
     }
 
@@ -277,41 +300,9 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         this.dataLoader = dataLoader;
         this.initialDataLoaderCondition = dataLoader.getCondition();
 
-        // TODO: gg, why on data loader set?
-//        initEmptyConfiguration();
-        // TODO: gg, that's why
         LogicalFilterComponent<?> rootLogicalFilterComponent = emptyConfiguration.getRootLogicalFilterComponent();
         rootLogicalFilterComponent.setDataLoader(dataLoader);
         rootLogicalFilterComponent.setAutoApply(autoApply);
-    }
-
-    protected void initEmptyConfiguration() {
-        LogicalFilterComponent<?> configurationLogicalComponent =
-                createConfigurationRootLogicalFilterComponent(LogicalFilterComponent.Operation.AND);
-        emptyConfiguration =
-                new RunTimeConfiguration("empty_configuration", configurationLogicalComponent, this);
-
-        String emptyConfigurationName = StringUtils.isNotEmpty(getSummaryText())
-                ? getSummaryText()
-                : messages.getMessage("filter.emptyConfiguration.name");
-        emptyConfiguration.setName(emptyConfigurationName);
-
-        setCurrentConfiguration(emptyConfiguration);
-    }
-
-    protected LogicalFilterComponent<?> createConfigurationRootLogicalFilterComponent(
-            LogicalFilterComponent.Operation rootOperation) {
-        GroupFilter rootGroupFilter = uiComponents.create(GroupFilter.class);
-        rootGroupFilter.setConditionModificationDelegated(true);
-        rootGroupFilter.setOperation(rootOperation);
-        rootGroupFilter.setOperationTextVisible(false);
-
-        if (dataLoader != null) {
-            rootGroupFilter.setDataLoader(dataLoader);
-            rootGroupFilter.setAutoApply(autoApply);
-        }
-
-        return rootGroupFilter;
     }
 
     public boolean isAutoApply() {
@@ -322,13 +313,16 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         if (this.autoApply != autoApply) {
             this.autoApply = autoApply;
 
-            updateSearchButtonText(autoApply);
-
-            getCurrentConfiguration()
-                    .getRootLogicalFilterComponent()
-                    .getOwnFilterComponents()
-                    .forEach(filterComponent -> filterComponent.setAutoApply(autoApply));
+            updateApplyButtonText(autoApply);
+            updateCurrentConfigurationAutoApply(autoApply);
         }
+    }
+
+    protected void updateCurrentConfigurationAutoApply(boolean autoApply) {
+        getCurrentConfiguration()
+                .getRootLogicalFilterComponent()
+                .getOwnFilterComponents()
+                .forEach(filterComponent -> filterComponent.setAutoApply(autoApply));
     }
 
     public void apply() {
@@ -345,19 +339,17 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     }
 
     @Override
-    public LabelPosition getLabelPosition() {
-        return labelPosition;
+    public List<ResponsiveStep> getResponsiveSteps() {
+        return Collections.unmodifiableList(responsiveSteps);
     }
 
     @Override
-    public void setLabelPosition(LabelPosition labelPosition) {
-        if (this.labelPosition != labelPosition) {
-            this.labelPosition = labelPosition;
+    public void setResponsiveSteps(List<ResponsiveStep> steps) {
+        this.responsiveSteps = steps;
 
-            LogicalFilterComponent<?> rootComponent = getCurrentConfiguration().getRootLogicalFilterComponent();
-            if (rootComponent instanceof SupportsLabelPosition) {
-                ((SupportsLabelPosition) rootComponent).setLabelPosition(labelPosition);
-            }
+        LogicalFilterComponent<?> rootComponent = getCurrentConfiguration().getRootLogicalFilterComponent();
+        if (rootComponent instanceof SupportsResponsiveSteps) {
+            ((SupportsResponsiveSteps) rootComponent).setResponsiveSteps(steps);
         }
     }
 
@@ -386,15 +378,16 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
             openedChangeRegistration = getContent().addOpenedChangeListener(this::onOpenedChanged);
         }
 
-        // TODO: gg, is it ok?
         Registration registration = getEventBus().addListener(OpenedChangeEvent.class, listener);
-        return Registration.once(() -> {
-            registration.remove();
-            if (!getEventBus().hasListener(OpenedChangeEvent.class)) {
-                openedChangeRegistration.remove();
-                openedChangeRegistration = null;
-            }
-        });
+        return Registration.once(() -> removeOpenedChangeListener(registration));
+    }
+
+    protected void removeOpenedChangeListener(Registration registration) {
+        registration.remove();
+        if (!getEventBus().hasListener(OpenedChangeEvent.class)) {
+            openedChangeRegistration.remove();
+            openedChangeRegistration = null;
+        }
     }
 
     protected void onOpenedChanged(Details.OpenedChangeEvent openedChangeEvent) {
@@ -402,63 +395,20 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         getEventBus().fireEvent(event);
     }
 
-    // TODO: gg, remove if possible
-    @Override
-    public Collection<Action> getActions() {
-        return settingsButton.getItems()
-                .stream().filter(item -> item instanceof ActionItem)
-                .map(item -> ((ActionItem) item).getAction())
-                .collect(Collectors.toList());
-    }
-
     @Nullable
-    @Override
-    public Action getAction(String id) {
-        DropdownButtonItem item = settingsButton.getItem(id);
-        return item instanceof ActionItem
-                ? ((ActionItem) item).getAction()
-                : null;
+    public Predicate<MetaPropertyPath> getPropertyFiltersPredicate() {
+        return propertyFiltersPredicate;
     }
 
-    @Override
-    public void addAction(Action action) {
-        settingsButton.addItem(action.getId(), action);
+    public void setPropertyFiltersPredicate(@Nullable Predicate<MetaPropertyPath> propertyFiltersPredicate) {
+        this.propertyFiltersPredicate = propertyFiltersPredicate;
     }
 
-    @Override
-    public void addAction(Action action, int index) {
-        settingsButton.addItem(action.getId(), action, index);
-    }
-
-    @Override
-    public void removeAction(String id) {
-        settingsButton.remove(id);
-    }
-
-    @Override
-    public void removeAction(Action action) {
-        settingsButton.remove(action.getId());
-    }
-
-    @Override
-    public void removeAllActions() {
-        settingsButton.removeAll();
-    }
-
-    @Nullable
-    public Predicate<MetaPropertyPath> getPropertiesFilterPredicate() {
-        return propertiesFilterPredicate;
-    }
-
-    public void setPropertiesFilterPredicate(@Nullable Predicate<MetaPropertyPath> propertiesFilterPredicate) {
-        this.propertiesFilterPredicate = propertiesFilterPredicate;
-    }
-
-    public void addPropertiesFilterPredicate(Predicate<MetaPropertyPath> propertiesFilterPredicate) {
-        if (this.propertiesFilterPredicate == null) {
-            setPropertiesFilterPredicate(propertiesFilterPredicate);
+    public void addPropertyFiltersPredicate(Predicate<MetaPropertyPath> propertyFiltersPredicate) {
+        if (this.propertyFiltersPredicate == null) {
+            setPropertyFiltersPredicate(propertyFiltersPredicate);
         } else {
-            this.propertiesFilterPredicate = this.propertiesFilterPredicate.and(propertiesFilterPredicate);
+            this.propertyFiltersPredicate = this.propertyFiltersPredicate.and(propertyFiltersPredicate);
         }
     }
 
@@ -468,8 +418,11 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
                 : emptyConfiguration;
     }
 
-    // TODO: gg, make internal with from client
     public void setCurrentConfiguration(Configuration currentConfiguration) {
+        setCurrentConfigurationInternal(currentConfiguration, false);
+    }
+
+    protected void setCurrentConfigurationInternal(Configuration currentConfiguration, boolean fromClient) {
         if (configurations.contains(currentConfiguration)
                 || getEmptyConfiguration().equals(currentConfiguration)) {
             if (this.currentConfiguration != currentConfiguration) {
@@ -484,7 +437,7 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
             if (currentConfiguration != previousConfiguration) {
                 ConfigurationChangeEvent configurationChangeEvent =
-                        new ConfigurationChangeEvent(this, currentConfiguration, previousConfiguration, true); // TODO: gg, true?
+                        new ConfigurationChangeEvent(this, currentConfiguration, previousConfiguration, fromClient);
                 getEventBus().fireEvent(configurationChangeEvent);
             }
         }
@@ -497,14 +450,13 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         for (Map.Entry<Configuration, Boolean> entry : configurationsMap.entrySet()) {
             addConfiguration(entry.getKey());
             if (!defaultForAllConfigurationApplied && entry.getValue()) {
-                setCurrentConfiguration(entry.getKey());
+                setCurrentConfigurationInternal(entry.getKey(), false);
                 defaultForAllConfigurationApplied = true;
             }
         }
     }
 
-    // TODO: gg, public?
-    public void refreshCurrentConfigurationLayout() {
+    protected void refreshCurrentConfigurationLayout() {
         if (rootLogicalFilterComponent != null) {
             contentWrapper.remove(((Component) rootLogicalFilterComponent));
         }
@@ -519,26 +471,15 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         }
 
         updateDataLoaderCondition();
-        updateRootLayoutCaption();
-//        updateActionsState();
+        updateRootLayoutSummaryText();
     }
 
     protected void updateRootLogicalFilterComponent(LogicalFilterComponent<?> logicalFilterComponent) {
-        // TODO: gg, implement
-        /*logicalFilterComponent.setParent(null);
-        ComponentsHelper.getComposition(logicalFilterComponent).setParent(null);
-        logicalFilterComponent.addStyleName(FILTER_ROOT_COMPONENT_STYLENAME);*/
-
         rootLogicalFilterComponent = logicalFilterComponent;
         contentWrapper.addComponentAsFirst(((Component) rootLogicalFilterComponent));
 
-        // TODO: gg, implement
-        /*if (rootLogicalFilterComponent instanceof SupportsColumnsCount) {
-            ((SupportsColumnsCount) rootLogicalFilterComponent).setColumnsCount(getColumnsCount());
-        }*/
-
-        if (rootLogicalFilterComponent instanceof SupportsLabelPosition) {
-            ((SupportsLabelPosition) rootLogicalFilterComponent).setLabelPosition(getLabelPosition());
+        if (rootLogicalFilterComponent instanceof SupportsResponsiveSteps) {
+            ((SupportsResponsiveSteps) rootLogicalFilterComponent).setResponsiveSteps(getResponsiveSteps());
         }
 
         rootLogicalFilterComponent.setAutoApply(isAutoApply());
@@ -566,18 +507,16 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
     protected void updateConditionRemoveButton(SingleFilterComponentBase<?> singleFilter) {
         String removeButtonPrefix = singleFilter.getInnerComponentPrefix();
-        // TODO: gg, constant
-        String removeButtonId = removeButtonPrefix + "conditionRemoveButton";
+        String removeButtonId = removeButtonPrefix + CONDITION_REMOVE_BUTTON_ID_SUFFIX;
 
         HorizontalLayout singleFilterLayout = singleFilter.getRoot();
         Optional<Component> existingRemoveButton = UiComponentUtils.findComponent(singleFilterLayout, removeButtonId);
 
         if (getCurrentConfiguration().isFilterComponentModified(singleFilter)) {
-            // TODO: gg, test if it is needed
             // If the removeButton is added to the singleFilterLayout
             // but is not located at the end, then we delete it and
-            // re-add it to the end.
-            // This situation is possible when changing the type of operation.
+            // re-add it to the end. This situation is possible when
+            // changing the type of operation.
             if (existingRemoveButton.isPresent()
                     && singleFilterLayout.indexOf(existingRemoveButton.get()) != singleFilterLayout.getComponentCount() - 1) {
                 singleFilterLayout.remove(existingRemoveButton.get());
@@ -611,13 +550,14 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     protected void removeFilterComponent(FilterComponent filterComponent) {
         LogicalFilterComponent<?> rootLogicalComponent = getCurrentConfiguration().getRootLogicalFilterComponent();
         if (filterComponent instanceof SingleFilterComponent) {
-            getCurrentConfiguration().resetFilterComponentDefaultValue(((SingleFilterComponent<?>) filterComponent).getParameterName());
+            getCurrentConfiguration()
+                    .resetFilterComponentDefaultValue(((SingleFilterComponent<?>) filterComponent).getParameterName());
         }
         rootLogicalComponent.remove(filterComponent);
         getCurrentConfiguration().setFilterComponentModified(filterComponent, false);
     }
 
-    protected void updateRootLayoutCaption() {
+    protected void updateRootLayoutSummaryText() {
         StringBuilder stringBuilder = new StringBuilder(getConfigurationName(getEmptyConfiguration()));
         if (!getEmptyConfiguration().equals(getCurrentConfiguration())) {
             stringBuilder.append(" : ")
@@ -638,7 +578,6 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
         return caption;
     }
-
 
     protected void updateDataLoaderCondition() {
         if (dataLoader != null) {
@@ -661,19 +600,6 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         }
     }
 
-    // TODO: gg, actions must do it themself
-    /*protected void updateActionsState() {
-     *//*searchButton.getItems().stream()
-                .filter(item -> item instanceof ActionItem)
-                .map(item -> ((ActionItem) item).getAction())
-                .forEach(Action::refreshState);*//*
-
-     *//*if (addConditionButton.getAction() != null) {
-            addConditionButton.getAction().refreshState();
-        }*//*
-    }*/
-
-
     public Configuration getEmptyConfiguration() {
         return emptyConfiguration;
     }
@@ -687,7 +613,7 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     }
 
     public List<Configuration> getConfigurations() {
-        return configurations;
+        return Collections.unmodifiableList(configurations);
     }
 
     public DesignTimeConfiguration addConfiguration(String id, @Nullable String name) {
@@ -697,9 +623,7 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     public DesignTimeConfiguration addConfiguration(String id, @Nullable String name,
                                                     LogicalFilterComponent.Operation rootOperation) {
         LogicalFilterComponent<?> rootComponent = createConfigurationRootLogicalFilterComponent(rootOperation);
-
-        DesignTimeConfiguration newConfiguration =
-                new DesignTimeConfiguration(id, name, rootComponent, this);
+        DesignTimeConfiguration newConfiguration = new DesignTimeConfiguration(id, name, rootComponent, this);
 
         addConfiguration(newConfiguration);
 
@@ -708,7 +632,6 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
 
     public void addConfiguration(Configuration configuration) {
         configurations.add(configuration);
-
         addSelectConfigurationAction(configuration);
     }
 
@@ -716,12 +639,10 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
         if (configuration != getEmptyConfiguration()
                 && !(configuration instanceof DesignTimeConfiguration)) {
             configurations.remove(configuration);
-            // TODO: gg, how to replace?
-//            configuration.getRootLogicalFilterComponent().setParent(null);
             configuration.getRootLogicalFilterComponent().getElement().removeFromParent();
 
             if (configuration == getCurrentConfiguration()) {
-                setCurrentConfiguration(getEmptyConfiguration());
+                setCurrentConfigurationInternal(getEmptyConfiguration(), false);
                 apply();
             } else {
                 updateSelectConfigurationDropdown();
@@ -730,12 +651,11 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     }
 
     protected void updateSelectConfigurationDropdown() {
-        // TODO: gg, try to remove
-        if (searchButton == null) {
+        if (applyButton == null) {
             return;
         }
 
-        searchButton.removeAll();
+        applyButton.removeAll();
         initSelectConfigurationDropdown();
         for (Configuration configuration : getConfigurations()) {
             addSelectConfigurationAction(configuration);
@@ -743,40 +663,62 @@ public class Filter extends Composite<JmixDetails> implements SupportsLabelPosit
     }
 
     protected void addSelectConfigurationAction(Configuration configuration) {
-        Action configurationAction = new BaseAction("filter_select_" + configuration.getId())
+        Action configurationAction = createConfigurationAction(configuration);
+        applyButton.addItem(configurationAction.getId(), configurationAction);
+    }
+
+    protected Action createConfigurationAction(Configuration configuration) {
+        return new BaseAction("filter_select_" + configuration.getId())
                 .withText(getConfigurationName(configuration))
                 .withHandler(actionPerformedEvent -> {
-                    setCurrentConfiguration(configuration);
+                    setCurrentConfigurationInternal(configuration, true);
                     apply();
                 });
-        searchButton.addItem(configurationAction.getId(), configurationAction);
     }
 
     public void addCondition(FilterComponent filterComponent) {
+        if (conditions == null) {
+            conditions = new ArrayList<>();
+        }
+
         conditions.add(filterComponent);
     }
 
     public List<FilterComponent> getConditions() {
-        return conditions;
+        return conditions != null
+                ? Collections.unmodifiableList(conditions)
+                : Collections.emptyList();
     }
 
     public void removeCondition(FilterComponent filterComponent) {
+        if (conditions == null) {
+            return;
+        }
+
         conditions.remove(filterComponent);
+
+        if (conditions.isEmpty()) {
+            conditions = null;
+        }
     }
 
     public Registration addConfigurationChangeListener(ComponentEventListener<ConfigurationChangeEvent> listener) {
         return getEventBus().addListener(ConfigurationChangeEvent.class, listener);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected void clearValues() {
-        if (rootLogicalFilterComponent != null && !rootLogicalFilterComponent.getFilterComponents().isEmpty()) {
-            for (FilterComponent component : rootLogicalFilterComponent.getFilterComponents()) {
-                if (component instanceof SingleFilterComponentBase) {
-                    SingleFilterComponentBase singleFilterComponent = (SingleFilterComponentBase) component;
-                    singleFilterComponent.setValue(getCurrentConfiguration()
-                            .getFilterComponentDefaultValue(singleFilterComponent.getParameterName()));
-                    getDataLoader().removeParameter(singleFilterComponent.getParameterName());
-                }
+        if (rootLogicalFilterComponent == null
+                || rootLogicalFilterComponent.getFilterComponents().isEmpty()) {
+            return;
+        }
+
+        for (FilterComponent component : rootLogicalFilterComponent.getFilterComponents()) {
+            if (component instanceof SingleFilterComponentBase) {
+                SingleFilterComponentBase singleFilterComponent = (SingleFilterComponentBase) component;
+                singleFilterComponent.setValue(getCurrentConfiguration()
+                        .getFilterComponentDefaultValue(singleFilterComponent.getParameterName()));
+                getDataLoader().removeParameter(singleFilterComponent.getParameterName());
             }
         }
     }

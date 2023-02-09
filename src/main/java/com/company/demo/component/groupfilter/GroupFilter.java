@@ -93,13 +93,16 @@ public class GroupFilter extends Composite<VerticalLayout>
     protected void initComponent() {
         this.autoApply = applicationContext.getBean(FlowuiComponentProperties.class).isFilterAutoApply();
 
+        initDefaultResponsiveSteps();
+        initLayout();
+    }
+
+    protected void initDefaultResponsiveSteps() {
         responsiveSteps = List.of(
                 new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
                 new ResponsiveStep("40em", 2),
                 new ResponsiveStep("75em", 3)
         );
-
-        initLayout();
     }
 
     protected void initLayout() {
@@ -212,22 +215,10 @@ public class GroupFilter extends Composite<VerticalLayout>
     }
 
     protected void updateQueryCondition() {
-        queryCondition = new LogicalCondition(toLogicalConditionType(operation));
+        queryCondition = new LogicalCondition(WrapperUtils.convertToLogicalConditionType(operation));
 
         for (FilterComponent ownComponent : getOwnFilterComponents()) {
             queryCondition.add(ownComponent.getQueryCondition());
-        }
-    }
-
-    // TODO: gg, create helper
-    public static LogicalCondition.Type toLogicalConditionType(LogicalFilterComponent.Operation operation) {
-        switch (operation) {
-            case AND:
-                return LogicalCondition.Type.AND;
-            case OR:
-                return LogicalCondition.Type.OR;
-            default:
-                throw new IllegalArgumentException("Unknown operation " + operation);
         }
     }
 

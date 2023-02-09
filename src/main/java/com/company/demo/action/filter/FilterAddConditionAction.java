@@ -1,8 +1,9 @@
 package com.company.demo.action.filter;
 
 import com.company.demo.accesscontext.FlowuiFilterModifyConfigurationContext;
-import com.company.demo.app.filter.conditiion.AddConditionView;
+import com.company.demo.app.filter.condition.AddConditionView;
 import com.company.demo.component.filter.Configuration;
+import com.company.demo.component.filter.FilterUtils;
 import com.company.demo.component.filter.LogicalFilterComponent;
 import com.company.demo.component.filter.builder.FilterConditionsBuilder;
 import com.company.demo.component.filter.configuration.DesignTimeConfiguration;
@@ -174,7 +175,7 @@ public class FilterAddConditionAction extends FilterAction<FilterAddConditionAct
                     }
                 }
 
-                target.setCurrentConfiguration(currentConfiguration);
+                FilterUtils.setCurrentConfiguration(target, currentConfiguration, true);
 
                 if (dataLoadNeeded) {
                     target.apply();

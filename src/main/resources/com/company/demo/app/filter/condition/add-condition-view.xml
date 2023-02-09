@@ -30,7 +30,7 @@
                       dataContainer="filterConditionsDc"
                       hierarchyProperty="parent"
                       selectionMode="MULTI"
-                      themeNames="no-row-borders"
+                      themeNames="no-row-borders no-header"
                       width="100%">
             <columns>
                 <column property="localizedLabel"/>

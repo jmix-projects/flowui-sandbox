@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.shared.Registration;
 import io.jmix.core.metamodel.model.MetaClass;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.UiComponents;
@@ -47,6 +48,7 @@ public class OrderListView extends StandardListView<Order> {
     @Autowired
     private Notifications notifications;
     private GroupFilter groupFilter;
+    private Registration registration;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -76,7 +78,12 @@ public class OrderListView extends StandardListView<Order> {
 
         groupFilter = ((GroupFilter) filter.getCurrentConfiguration().getRootLogicalFilterComponent());
 
-//        filter.setLabelPosition(SupportsLabelPosition.LabelPosition.TOP);
+
+        registration = filter.addOpenedChangeListener(openedChangeEvent -> {
+            notifications.create("openedChangeEvent: " + openedChangeEvent.isOpened()
+                            + "; fromClient: " + openedChangeEvent.isFromClient())
+                    .show();
+        });
     }
 
     protected HasValueAndElement generateValueComponent(Class<?> paramType) {
@@ -88,8 +95,7 @@ public class OrderListView extends StandardListView<Order> {
     public void onBtnClick(ClickEvent<Button> event) {
         /*Element element = db.getElement();
         element.executeJs("setTimeout(function(){$0.focus()},0)", element);*/
-        groupFilter.setSummaryText("TEST SUMMARY " + RandomStringUtils.randomAlphanumeric(2));
+//        groupFilter.setSummaryText("TEST SUMMARY " + RandomStringUtils.randomAlphanumeric(2));
+        registration.remove();
     }
-
-
 }

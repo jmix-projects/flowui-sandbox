@@ -34,17 +34,9 @@
             <button id="readBtn" action="ordersTable.read"/>
             <button id="removeBtn" action="ordersTable.remove"/>
 
-            <simplePagination id="pagination" dataLoader="ordersDl"/>
-
-            <dropdownButton id="db">
-                <items>
-                    <textItem id="ti1" text="Text"/>
-                    <textItem id="ti2" text="Text"/>
-                    <textItem id="ti3" text="Text"/>
-                </items>
-            </dropdownButton>
-
             <button id="btn" text="Focus Pocus"/>
+
+            <simplePagination id="pagination" dataLoader="ordersDl"/>
         </hbox>
         <dataGrid id="ordersTable"
                   width="100%"

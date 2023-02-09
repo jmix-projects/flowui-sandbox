@@ -37,4 +37,8 @@ public class FilterUtils {
         return (view != null ? "[" + view.getId().orElse("viewWithoutId") + "]" : "")
                 + filter.getId().orElse("filterWithoutId");
     }
+
+    public static void setCurrentConfiguration(Filter filter, Configuration currentConfiguration, boolean fromClient) {
+        filter.setCurrentConfigurationInternal(currentConfiguration, fromClient);
+    }
 }

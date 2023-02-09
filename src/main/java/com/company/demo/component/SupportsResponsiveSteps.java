@@ -37,9 +37,9 @@ public interface SupportsResponsiveSteps {
 
     class ResponsiveStep {
 
-        private String minWidth;
-        private int columns;
-        private LabelsPosition labelsPosition;
+        private final String minWidth;
+        private final int columns;
+        private final LabelsPosition labelsPosition;
 
         /**
          * Constructs a ResponsiveStep with the given minimum width and number

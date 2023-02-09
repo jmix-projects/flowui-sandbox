@@ -1,4 +1,4 @@
-package com.company.demo.app.filter.conditiion;
+package com.company.demo.app.filter.condition;
 
 import com.company.demo.component.filter.Configuration;
 import com.company.demo.component.filter.builder.PropertyConditionBuilder;
